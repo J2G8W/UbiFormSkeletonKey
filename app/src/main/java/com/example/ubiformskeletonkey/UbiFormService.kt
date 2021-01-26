@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.wifi.WifiManager
 import android.os.Binder
 import android.os.IBinder
+import android.widget.TextView
 
 class UbiFormService : Service() {
     private val binder = LocalBinder()
@@ -40,7 +41,7 @@ class UbiFormService : Service() {
     external fun getRdhAddress() : String
 
     external fun endComponent() : Unit
-    external fun addRDH(url: String): Boolean
+    external fun addRDH(url: String, errorTextObject: TextView): Boolean
     external fun getRDHUrls(): Array<String>
 
     external fun updateManifestWithHubs()

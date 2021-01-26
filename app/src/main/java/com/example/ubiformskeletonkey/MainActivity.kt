@@ -3,7 +3,6 @@ package com.example.ubiformskeletonkey
 import android.app.ActionBar
 import android.content.Intent
 import android.os.Bundle
-import android.provider.AlarmClock
 import android.view.View
 import android.widget.*
 
@@ -48,10 +47,8 @@ class MainActivity : GeneralConnectedActivity() {
         findViewById<TextView>(R.id.main_output).text = "Trying to add RDH"
         val rdhText = findViewById<EditText>(R.id.input_rdh)
         val url : String = rdhText.text.toString()
-        if(mService.addRDH(url)){
+        if(mService.addRDH(url, findViewById(R.id.main_output))){
             updateRDHList()
-        }else{
-            findViewById<TextView>(R.id.main_output).text = "Error registering with: $url"
         }
     }
 
@@ -70,7 +67,7 @@ class MainActivity : GeneralConnectedActivity() {
             }
         }
         if(choice.selectedItemId in 0L..3L){
-            findViewById<TextView>(R.id.main_output).text = "Completed " + choice.selectedItem.toString()
+            //findViewById<TextView>(R.id.main_output).text = "Completed " + choice.selectedItem.toString()
         }
         updateRDHList()
     }

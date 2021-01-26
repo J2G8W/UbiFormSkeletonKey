@@ -4,6 +4,15 @@
 
 Component* component = nullptr;
 
+void reportError(const std::string& errorMsg, JNIEnv *env,
+                 jobject errorTextObject){
+    jclass TextViewClass = env->FindClass("android/widget/TextView");
+    jmethodID setText = env->GetMethodID(TextViewClass,"setText", "(Ljava/lang/CharSequence;)V");
+    jstring msg = env->NewStringUTF(errorMsg.c_str());
+    env->CallVoidMethod(errorTextObject, setText, msg);
+}
+
+
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_startComponent(JNIEnv *env, jobject thiz,
@@ -63,13 +72,15 @@ Java_com_example_ubiformskeletonkey_UbiFormService_endComponent(JNIEnv *env, job
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_example_ubiformskeletonkey_UbiFormService_addRDH(JNIEnv *env, jobject thiz, jstring url) {
+Java_com_example_ubiformskeletonkey_UbiFormService_addRDH(JNIEnv *env, jobject thiz, jstring url,
+                                                          jobject error_text_object) {
     try{
         jboolean isCopy = false;
         std::string rdhUrl = env->GetStringUTFChars(url, &isCopy);
         component->getResourceDiscoveryConnectionEndpoint().registerWithHub(rdhUrl);
         return true;
     } catch (std::logic_error &e) {
+        reportError(e.what(),env,error_text_object);
         return false;
     }
 }
