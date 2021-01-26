@@ -138,7 +138,8 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getRdhAddress(JNIEnv *env, jo
 
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_com_example_ubiformskeletonkey_UbiFormService_getComponents(JNIEnv *env, jobject thiz, jstring rdh_url) {
+Java_com_example_ubiformskeletonkey_UbiFormService_getComponents(JNIEnv *env, jobject thiz, jstring rdh_url,
+                                                                 jobject error_text_object) {
     try{
         jboolean isCopy = false;
         std::string rdhUrl = env->GetStringUTFChars(rdh_url, &isCopy);
@@ -151,6 +152,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getComponents(JNIEnv *env, jo
         }
         return ret;
     } catch (std::logic_error &e) {
+        reportError(e.what(),env, error_text_object);
         return env->NewObjectArray(0,env->FindClass("java/lang/String"),
                                    env->NewStringUTF(""));
     }
@@ -159,7 +161,8 @@ JNIEXPORT jstring JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEnv *env,
                                                                            jobject thiz,
                                                                            jstring rdh_url,
-                                                                           jstring component_id) {
+                                                                           jstring component_id,
+                                                                           jobject error_text_object) {
     jboolean isCopy = false;
     std::string rdhUrl = env->GetStringUTFChars(rdh_url, &isCopy);
     std::string id = env->GetStringUTFChars(component_id, &isCopy);
@@ -182,11 +185,10 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
         if(found){
             return env->NewStringUTF(correctUrl.c_str());
         }else{
-            return env->NewStringUTF("Error: the given component did not respond");
+            reportError("No URL was successfully connected to", env,error_text_object);
         }
     }catch(std::logic_error &e){
-        std::string ret = "Error: " + std::string(e.what());
-        return env->NewStringUTF(ret.c_str());
+        reportError(e.what(),env,error_text_object);
     }
-
+    return env->NewStringUTF("");
 }

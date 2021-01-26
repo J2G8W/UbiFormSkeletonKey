@@ -1,6 +1,5 @@
 package com.example.ubiformskeletonkey
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 
@@ -11,13 +10,11 @@ class SocketList : GeneralConnectedActivity() {
     var correctComponentUrl: String = ""
 
     override fun connectedToUbiForm() {
-        correctComponentUrl = mService.getCorrectRemoteAddress(rdhUrl,componentId)
+        correctComponentUrl = mService.getCorrectRemoteAddress(rdhUrl, componentId,findViewById(R.id.main_output))
         successfulConnection = correctComponentUrl.startsWith("tcp")
 
         if(successfulConnection) {
             findViewById<TextView>(R.id.main_output).text = "Connected to ${correctComponentUrl}"
-        }else{
-            findViewById<TextView>(R.id.main_output).text = correctComponentUrl
         }
     }
 

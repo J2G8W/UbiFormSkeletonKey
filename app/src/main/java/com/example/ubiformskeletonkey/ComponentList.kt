@@ -21,10 +21,8 @@ class ComponentList : GeneralConnectedActivity() {
     private fun updateComponentList(){
         if(mBound) {
             findViewById<LinearLayout>(R.id.component_container).removeAllViews()
-            val components: Array<String> = mService.getComponents(rdhUrl)
-            if (components.isEmpty()) {
-                findViewById<TextView>(R.id.main_output).text = "Could not get the components from this RDH"
-            } else {
+            val components: Array<String> = mService.getComponents(rdhUrl, findViewById(R.id.main_output))
+            if (!components.isEmpty()){
                 for (componentId in components) {
                     val component = Button(this)
                     component.text = componentId
@@ -46,5 +44,4 @@ class ComponentList : GeneralConnectedActivity() {
             }
         }
     }
-
 }
