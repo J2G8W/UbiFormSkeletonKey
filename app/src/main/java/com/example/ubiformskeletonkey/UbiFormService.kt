@@ -50,7 +50,13 @@ class UbiFormService : Service() {
     external fun openRDH()
 
     external fun getComponents(rdhUrl: String, errorTextObject: TextView): Array<String>
+
     external fun getCorrectRemoteAddress(rdhUrl: String, componentId: String, errorTextObject: TextView) : String
+    external fun requestCloseSocketsOfType(url:String, endpointType:String, errorTextObject: TextView) :Boolean
+    external fun requestCreateRDH(url: String, errorTextObject: TextView) :Boolean
+    external fun requestCloseRDH(url: String,errorTextObject: TextView) :Boolean
+    external fun requestAddRDH(url:String, rdh:String,errorTextObject: TextView) :Boolean
+    external fun requestRemoveRDH(url:String, rdh: String,errorTextObject: TextView) :Boolean
 
 
     companion object {

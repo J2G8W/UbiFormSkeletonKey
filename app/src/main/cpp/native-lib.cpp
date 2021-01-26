@@ -192,3 +192,83 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
     }
     return env->NewStringUTF("");
 }
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseSocketsOfType(JNIEnv *env,
+                                                                             jobject thiz,
+                                                                             jstring url,
+                                                                             jstring endpoint_type,
+                                                                             jobject error_text_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
+    std::string endpointType = env->GetStringUTFChars(endpoint_type, &isCopy);
+    try {
+        component->getBackgroundRequester().requestCloseSocketOfType(componentUrl, endpointType);
+        return true;
+    }catch (std::logic_error &e){
+        reportError(e.what(), env, error_text_object);
+        return false;
+    }
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestCreateRDH(JNIEnv *env, jobject thiz,
+                                                                    jstring url,
+                                                                    jobject error_text_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
+    try {
+        component->getBackgroundRequester().requestCreateRDH(componentUrl);
+        return true;
+    }catch (std::logic_error &e){
+        reportError(e.what(),env, error_text_object);
+        return  false;
+    }
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseRDH(JNIEnv *env, jobject thiz,
+                                                                   jstring url,
+                                                                   jobject error_text_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
+    try {
+        component->getBackgroundRequester().requestCloseRDH(componentUrl);
+        return true;
+    }catch (std::logic_error &e){
+        reportError(e.what(),env, error_text_object);
+        return  false;
+    }
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestAddRDH(JNIEnv *env, jobject thiz,
+                                                                 jstring url, jstring rdh,
+                                                                 jobject error_text_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
+    std::string rdhUrl = env->GetStringUTFChars(rdh, &isCopy);
+    try {
+        component->getBackgroundRequester().requestAddRDH(componentUrl, rdhUrl);
+        return true;
+    }catch (std::logic_error &e){
+        reportError(e.what(),env, error_text_object);
+        return  false;
+    }
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestRemoveRDH(JNIEnv *env, jobject thiz,
+                                                                    jstring url, jstring rdh,
+                                                                    jobject error_text_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
+    std::string rdhUrl = env->GetStringUTFChars(rdh, &isCopy);
+    try {
+        component->getBackgroundRequester().requestRemoveRDH(componentUrl, rdhUrl);
+        return true;
+    }catch (std::logic_error &e){
+        reportError(e.what(),env, error_text_object);
+        return  false;
+    }
+}
