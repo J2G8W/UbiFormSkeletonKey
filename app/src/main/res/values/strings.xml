@@ -5,6 +5,7 @@
     <string name="add_rdh_hint">RDH url</string>
     <string name="go">Go</string>
     <string name="component_title">Components</string>
+    <string name="socket_title">Sockets</string>
     <string-array name="component_action_options">
         <item>Update Manifest With Hubs</item>
         <item>Deregister from all hubs</item>

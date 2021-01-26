@@ -1,8 +1,8 @@
 package com.example.ubiformskeletonkey
 
 import android.app.ActionBar
+import android.content.Intent
 import android.os.Bundle
-import android.provider.AlarmClock
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -32,6 +32,14 @@ class ComponentList : GeneralConnectedActivity() {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         ActionBar.LayoutParams.WRAP_CONTENT
                     )
+                    component.setOnClickListener {
+                        val intent = Intent(it.context,SocketList::class.java)
+                            .apply {
+                                putExtra("rdh",rdhUrl)
+                                putExtra("id", componentId)
+                            }
+                        startActivity(intent)
+                    }
 
                     findViewById<LinearLayout>(R.id.component_container).addView(component)
                 }

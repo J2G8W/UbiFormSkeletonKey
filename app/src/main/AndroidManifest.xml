@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UbiFormSkeletonKey">
-        <activity android:name=".ComponentList"></activity>
+        <activity android:name=".SocketList"></activity>
+        <activity android:name=".ComponentList" />
 
         <service
             android:name=".UbiFormService"

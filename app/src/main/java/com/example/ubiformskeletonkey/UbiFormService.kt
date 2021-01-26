@@ -49,6 +49,7 @@ class UbiFormService : Service() {
     external fun openRDH()
 
     external fun getComponents(rdhUrl: String): Array<String>
+    external fun getCorrectRemoteAddress(rdhUrl: String, componentId: String) : String
 
 
     companion object {
