@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">UbiForm Skeleton Key</string>
+    <string name="rdh_title">Resource Discovery Hubs</string>
+    <string name="add_rdh">Add RDH</string>
+    <string name="add_rdh_hint">RDH url</string>
+    <string name="go">Go</string>
+    <string-array name="component_action_options">
+        <item>Update Manifest With Hubs</item>
+        <item>Deregister from all hubs</item>
+        <item>Close Resource Discovery Hub</item>
+        <item>Open Resource Discovery Hub</item>
+        <item>Get Background Address</item>
+        <item>Get RDH address</item>
+    </string-array>
+</resources>
