@@ -1,12 +1,16 @@
 package com.example.ubiformskeletonkey
 
 import android.app.ActionBar
+import android.content.Intent
 import android.os.Bundle
 import android.provider.AlarmClock
 import android.view.View
 import android.widget.*
 
 class MainActivity : GeneralConnectedActivity() {
+    override fun connectedToUbiForm() {
+        updateRDHList()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +33,11 @@ class MainActivity : GeneralConnectedActivity() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     ActionBar.LayoutParams.WRAP_CONTENT
                 )
+                rdh.setOnClickListener {
+                    val intent = Intent(it.context,ComponentList::class.java)
+                        .apply { putExtra("url",rdhText) }
+                    startActivity(intent)
+                }
 
                 findViewById<LinearLayout>(R.id.rdh_container).addView(rdh)
             }
@@ -40,15 +49,7 @@ class MainActivity : GeneralConnectedActivity() {
         val rdhText = findViewById<EditText>(R.id.input_rdh)
         val url : String = rdhText.text.toString()
         if(mService.addRDH(url)){
-            val rdh = Button(this)
-            rdh.text = url
-            rdh.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                ActionBar.LayoutParams.WRAP_CONTENT
-            )
-            findViewById<LinearLayout>(R.id.rdh_container).addView(rdh)
-            findViewById<TextView>(R.id.main_output).text = "Success registering with: $url"
-            rdhText.text.clear()
+            updateRDHList()
         }else{
             findViewById<TextView>(R.id.main_output).text = "Error registering with: $url"
         }

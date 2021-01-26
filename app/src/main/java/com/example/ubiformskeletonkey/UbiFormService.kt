@@ -48,6 +48,8 @@ class UbiFormService : Service() {
     external fun closeRDH()
     external fun openRDH()
 
+    external fun getComponents(rdhUrl: String): Array<String>
+
 
     companion object {
         // Used to load the 'native-lib' library on application startup.

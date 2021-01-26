@@ -124,3 +124,23 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getRdhAddress(JNIEnv *env, jo
         return env->NewStringUTF("Error no RDH exists");
     }
 }
+
+extern "C"
+JNIEXPORT jobjectArray JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_getComponents(JNIEnv *env, jobject thiz, jstring rdh_url) {
+    try{
+        jboolean isCopy = false;
+        std::string rdhUrl = env->GetStringUTFChars(rdh_url, &isCopy);
+        auto ids = component->getResourceDiscoveryConnectionEndpoint().getComponentIdsFromHub(rdhUrl);
+        jobjectArray ret = env->NewObjectArray(ids.size(),
+                                               env->FindClass("java/lang/String"),
+                                               env->NewStringUTF(""));
+        for(int i =0; i < ids.size() ; i++){
+            env->SetObjectArrayElement(ret,i, env->NewStringUTF(ids.at(i).c_str()));
+        }
+        return ret;
+    } catch (std::logic_error &e) {
+        return env->NewObjectArray(0,env->FindClass("java/lang/String"),
+                                   env->NewStringUTF(""));
+    }
+}

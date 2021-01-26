@@ -8,7 +8,7 @@ import android.os.IBinder
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-open class GeneralConnectedActivity : AppCompatActivity() {
+abstract class GeneralConnectedActivity : AppCompatActivity() {
     protected lateinit var mService: UbiFormService
     protected var mBound: Boolean = false
     protected val connection = object : ServiceConnection {
@@ -17,6 +17,7 @@ open class GeneralConnectedActivity : AppCompatActivity() {
             val binder = service as UbiFormService.LocalBinder
             mService = binder.getService()
             mBound = true
+            connectedToUbiForm()
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
@@ -32,7 +33,9 @@ open class GeneralConnectedActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        unbindService(connection)
         mBound = false
+        unbindService(connection)
     }
+
+    abstract fun connectedToUbiForm()
 }

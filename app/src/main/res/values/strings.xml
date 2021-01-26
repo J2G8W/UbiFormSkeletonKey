@@ -4,6 +4,7 @@
     <string name="add_rdh">Add RDH</string>
     <string name="add_rdh_hint">RDH url</string>
     <string name="go">Go</string>
+    <string name="component_title">Components</string>
     <string-array name="component_action_options">
         <item>Update Manifest With Hubs</item>
         <item>Deregister from all hubs</item>
@@ -11,5 +12,8 @@
         <item>Open Resource Discovery Hub</item>
         <item>Get Background Address</item>
         <item>Get RDH address</item>
+    </string-array>
+    <string-array name="rdh_action_options">
+        <item>Close Resource Discovery Hub</item>
     </string-array>
 </resources>

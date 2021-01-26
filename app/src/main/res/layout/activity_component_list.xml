@@ -26,55 +26,31 @@
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rdh_title">
+        app:layout_constraintTop_toBottomOf="@+id/component_title">
 
         <LinearLayout
-            android:id="@+id/rdh_container"
+            android:id="@+id/component_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
 
     <TextView
-        android:id="@+id/rdh_title"
+        android:id="@+id/component_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
-        android:text="@string/rdh_title"
+        android:text="@string/component_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_output" />
 
-    <EditText
-        android:id="@+id/input_rdh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="42dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/add_rdh_hint"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
-
-    <Button
-        android:id="@+id/add_rdh_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:onClick="addRDH"
-        android:text="@string/add_rdh"
-        app:layout_constraintBottom_toBottomOf="@+id/input_rdh"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/input_rdh" />
-
     <Spinner
-        android:id="@+id/component_action_choice"
+        android:id="@+id/rdh_action_choice"
         android:layout_width="263dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="92dp"
+        android:layout_marginBottom="220dp"
         android:entries="@array/component_action_options"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -86,8 +62,8 @@
         android:layout_marginEnd="22dp"
         android:onClick="doComponentAction"
         android:text="@string/go"
-        app:layout_constraintBottom_toBottomOf="@+id/component_action_choice"
+        app:layout_constraintBottom_toBottomOf="@+id/rdh_action_choice"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/component_action_choice" />
+        app:layout_constraintTop_toTopOf="@+id/rdh_action_choice" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
