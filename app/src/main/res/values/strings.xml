@@ -6,6 +6,7 @@
     <string name="go">Go</string>
     <string name="component_title">Components</string>
     <string name="socket_title">Sockets</string>
+    <string name="choose_action">Choose Action</string>
     <string-array name="component_action_options">
         <item>Update Manifest With Hubs</item>
         <item>Deregister from all hubs</item>
@@ -15,6 +16,15 @@
         <item>Get RDH address</item>
     </string-array>
     <string-array name="rdh_action_options">
-        <item>Close Resource Discovery Hub</item>
+        <item>Request Close Resource Discovery Hub</item>
+    </string-array>
+    <string-array name="socket_action_options">
+        <item>No Action</item>
+        <item>Close sockets of ID</item>
+        <item>Close sockets of type</item>
+        <item>Request Create RDH</item>
+        <item>Request Register with RDH</item>
+        <item>Request De-register from RDH</item>
+        <item>Update Manifest</item>
     </string-array>
 </resources>

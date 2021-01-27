@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".SocketList">
 
     <TextView
         android:id="@+id/main_output"
@@ -51,19 +51,57 @@
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="220dp"
-        android:entries="@array/component_action_options"
+        android:entries="@array/socket_action_options"
+        android:prompt="@string/choose_action"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/go_button"
+        android:id="@+id/socket_go_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="22dp"
-        android:onClick="doComponentAction"
+        android:onClick="socketAction"
         android:text="@string/go"
         app:layout_constraintBottom_toBottomOf="@+id/socket_action_choice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/socket_action_choice" />
+
+    <EditText
+        android:id="@+id/short_input_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="26dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/socket_action_choice" />
+
+    <EditText
+        android:id="@+id/short_input_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/short_input_one" />
+
+    <EditText
+        android:id="@+id/long_input"
+        android:layout_width="369dp"
+        android:layout_height="194dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/socket_action_choice" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

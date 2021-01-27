@@ -175,7 +175,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
         for(const auto& url : rep->getAllUrls()){
             try {
                 component->getBackgroundRequester().requestLocationsOfRDH(url + ":" +std::to_string(port));
-                correctUrl = url;
+                correctUrl = url + ":" + std::to_string(port);
                 found = true;
                 break;
             }catch(std::logic_error &e){
