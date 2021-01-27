@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.wifi.WifiManager
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import android.widget.TextView
 
 class UbiFormService : Service() {
@@ -15,8 +16,14 @@ class UbiFormService : Service() {
         val numAddress = wifiManager.connectionInfo.ipAddress.toLong()
         val ipAddress = "tcp://${(numAddress and 0xff)}.${(numAddress shr 8 and 0xff)}.${(numAddress shr 16 and 0xff)}.${(numAddress shr 24 and 0xff)}"
 
-        startComponent(ipAddress)
-        startRDH()
+        val componentMsg = startComponent(ipAddress)
+        if (componentMsg.isNotEmpty()){
+            Log.e("Component Creation", componentMsg)
+        }
+        val rdhMsg = startRDH()
+        if(rdhMsg.isNotEmpty()){
+            Log.e("RDH Creation", rdhMsg)
+        }
     }
 
     override fun onBind(intent: Intent): IBinder {

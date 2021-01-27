@@ -28,9 +28,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_startComponent(JNIEnv *env, j
         if(component->getBackgroundPort() == -1) {
             component->startBackgroundListen();
         }
-        std::string returnString = "Component listening successfully\nAddress: " + component->getSelfAddress()
-                                   + "\nPort: " + std::to_string(component->getBackgroundPort());
-        return env->NewStringUTF(returnString.c_str());
+        return env->NewStringUTF("");
     }catch (std::logic_error &e){
         std::string returnString = "Error with component startup: " + std::string(e.what());
         return env->NewStringUTF(returnString.c_str());
@@ -48,8 +46,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_startRDH(JNIEnv *env, jobject
         if(hubs.empty()){
             return env->NewStringUTF("No hub started");
         }
-        std::string returnString = "Resource Discovery Hub started\nAddress: " + hubs.at(0);
-        return env->NewStringUTF(returnString.c_str());
+        return env->NewStringUTF("");
     }catch (std::logic_error &e){
         std::string returnString = "Error with RDH startup: " + std::string(e.what());
         return env->NewStringUTF(returnString.c_str());
