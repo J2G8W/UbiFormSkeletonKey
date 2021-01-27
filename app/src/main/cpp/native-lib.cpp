@@ -4,12 +4,12 @@
 
 Component* component = nullptr;
 
-void reportError(const std::string& errorMsg, JNIEnv *env,
-                 jobject errorTextObject){
-    jclass TextViewClass = env->FindClass("android/widget/TextView");
-    jmethodID setText = env->GetMethodID(TextViewClass,"setText", "(Ljava/lang/CharSequence;)V");
-    jstring msg = env->NewStringUTF(errorMsg.c_str());
-    env->CallVoidMethod(errorTextObject, setText, msg);
+void writeToText(const std::string& textToWrite, JNIEnv *env,
+                 jobject textObject){
+    jclass TextViewClass = env->FindClass("com/example/ubiformskeletonkey/GeneralConnectedActivity");
+    jmethodID setText = env->GetMethodID(TextViewClass,"updateMainOutput", "(Ljava/lang/String;)V");
+    jstring msg = env->NewStringUTF(textToWrite.c_str());
+    env->CallVoidMethod(textObject, setText, msg);
 }
 
 
@@ -73,14 +73,15 @@ Java_com_example_ubiformskeletonkey_UbiFormService_endComponent(JNIEnv *env, job
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_addRDH(JNIEnv *env, jobject thiz, jstring url,
-                                                          jobject error_text_object) {
+                                                          jobject activity_object) {
     try{
         jboolean isCopy = false;
         std::string rdhUrl = env->GetStringUTFChars(url, &isCopy);
         component->getResourceDiscoveryConnectionEndpoint().registerWithHub(rdhUrl);
+        writeToText("Success adding Resouce Discovery Hub", env, activity_object);
         return true;
     } catch (std::logic_error &e) {
-        reportError(e.what(),env,error_text_object);
+        writeToText(e.what(), env, activity_object);
         return false;
     }
 }
@@ -101,27 +102,35 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getRDHUrls(JNIEnv *env, jobje
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_updateManifestWithHubs(JNIEnv *env,
-                                                                          jobject thiz) {
+                                                                          jobject thiz,
+                                                                          jobject activity_object) {
     component->getResourceDiscoveryConnectionEndpoint().updateManifestWithHubs();
+    writeToText("Succesfully updated manifest with hubs", env,activity_object);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_deregisterFromAllHubs(JNIEnv *env,
-                                                                         jobject thiz) {
+                                                                         jobject thiz,
+                                                                         jobject activity_object) {
     component->getResourceDiscoveryConnectionEndpoint().deRegisterFromAllHubs();
+    writeToText("Successfully deregistered from hubs", env,activity_object);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_ubiformskeletonkey_UbiFormService_closeRDH(JNIEnv *env, jobject thiz) {
+Java_com_example_ubiformskeletonkey_UbiFormService_closeRDH(JNIEnv *env, jobject thiz,
+                                                            jobject activity_object) {
     component->closeResourceDiscoveryHub();
+    writeToText("Successfully closed Resource Discovery Hub", env,activity_object);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_ubiformskeletonkey_UbiFormService_openRDH(JNIEnv *env, jobject thiz) {
+Java_com_example_ubiformskeletonkey_UbiFormService_openRDH(JNIEnv *env, jobject thiz,
+                                                           jobject activity_object) {
     component->startResourceDiscoveryHub();
+    writeToText("Successfully opened Resource Discovery Hub", env,activity_object);
 }
 
 extern "C"
@@ -152,7 +161,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getComponents(JNIEnv *env, jo
         }
         return ret;
     } catch (std::logic_error &e) {
-        reportError(e.what(),env, error_text_object);
+        writeToText(e.what(), env, error_text_object);
         return env->NewObjectArray(0,env->FindClass("java/lang/String"),
                                    env->NewStringUTF(""));
     }
@@ -185,10 +194,10 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
         if(found){
             return env->NewStringUTF(correctUrl.c_str());
         }else{
-            reportError("No URL was successfully connected to", env,error_text_object);
+            writeToText("No URL was successfully connected to", env, error_text_object);
         }
     }catch(std::logic_error &e){
-        reportError(e.what(),env,error_text_object);
+        writeToText(e.what(), env, error_text_object);
     }
     return env->NewStringUTF("");
 }
@@ -206,7 +215,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseSocketsOfType(JNI
         component->getBackgroundRequester().requestCloseSocketOfType(componentUrl, endpointType);
         return true;
     }catch (std::logic_error &e){
-        reportError(e.what(), env, error_text_object);
+        writeToText(e.what(), env, error_text_object);
         return false;
     }
 }
@@ -221,7 +230,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestCreateRDH(JNIEnv *env,
         component->getBackgroundRequester().requestCreateRDH(componentUrl);
         return true;
     }catch (std::logic_error &e){
-        reportError(e.what(),env, error_text_object);
+        writeToText(e.what(), env, error_text_object);
         return  false;
     }
 }
@@ -236,7 +245,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseRDH(JNIEnv *env, 
         component->getBackgroundRequester().requestCloseRDH(componentUrl);
         return true;
     }catch (std::logic_error &e){
-        reportError(e.what(),env, error_text_object);
+        writeToText(e.what(), env, error_text_object);
         return  false;
     }
 }
@@ -252,7 +261,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestAddRDH(JNIEnv *env, jo
         component->getBackgroundRequester().requestAddRDH(componentUrl, rdhUrl);
         return true;
     }catch (std::logic_error &e){
-        reportError(e.what(),env, error_text_object);
+        writeToText(e.what(), env, error_text_object);
         return  false;
     }
 }
@@ -268,7 +277,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestRemoveRDH(JNIEnv *env,
         component->getBackgroundRequester().requestRemoveRDH(componentUrl, rdhUrl);
         return true;
     }catch (std::logic_error &e){
-        reportError(e.what(),env, error_text_object);
+        writeToText(e.what(), env, error_text_object);
         return  false;
     }
 }
@@ -294,7 +303,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getSocketDescriptors(JNIEnv *
         }
         return ret;
     }catch(std::logic_error &e){
-        reportError(e.what(), env, error_text_object);
+        writeToText(e.what(), env, error_text_object);
         return env->NewObjectArray(0, env->FindClass("java/lang/String"), env->NewStringUTF(""));
     }
 }
@@ -310,10 +319,10 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestComponentManifest(JNIE
     try {
         std::string manifest =
                 component->getBackgroundRequester().requestComponentManifest(componentUrl)->stringify();
-        reportError(manifest,env, error_text_object);
+        writeToText(manifest, env, error_text_object);
         return true;
     }catch(std::logic_error &e){
-        reportError(e.what(),env, error_text_object);
+        writeToText(e.what(), env, error_text_object);
         return false;
     }
 }extern "C"
@@ -331,7 +340,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestChangeComponentManifes
         component->getBackgroundRequester().requestUpdateComponentManifest(componentUrl,componentManifest);
         return true;
     } catch (std::logic_error& e) {
-        reportError(e.what(),env, error_text_object);
+        writeToText(e.what(), env, error_text_object);
         return false;
     }
 }

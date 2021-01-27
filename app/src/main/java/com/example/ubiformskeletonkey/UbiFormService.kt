@@ -41,13 +41,13 @@ class UbiFormService : Service() {
     external fun getRdhAddress() : String
 
     external fun endComponent() : Unit
-    external fun addRDH(url: String, errorTextObject: TextView): Boolean
+    external fun addRDH(url: String, activityObject: GeneralConnectedActivity): Boolean
     external fun getRDHUrls(): Array<String>
 
-    external fun updateManifestWithHubs()
-    external fun deregisterFromAllHubs()
-    external fun closeRDH()
-    external fun openRDH()
+    external fun updateManifestWithHubs(activityObject: GeneralConnectedActivity)
+    external fun deregisterFromAllHubs(activityObject: GeneralConnectedActivity)
+    external fun closeRDH(activityObject: GeneralConnectedActivity)
+    external fun openRDH(activityObject: GeneralConnectedActivity)
 
     external fun getComponents(rdhUrl: String, errorTextObject: TextView): Array<String>
 

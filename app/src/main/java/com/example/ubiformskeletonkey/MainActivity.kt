@@ -23,7 +23,8 @@ class MainActivity : GeneralConnectedActivity() {
 
     private fun updateRDHList(){
         if(mBound) {
-            findViewById<LinearLayout>(R.id.rdh_container).removeAllViews()
+            val container = findViewById<LinearLayout>(R.id.rdh_container)
+            container.post{container.removeAllViews()}
             val rdhs: Array<String> = mService.getRDHUrls()
             for (rdhText in rdhs) {
                 val rdh = Button(this)
@@ -37,8 +38,7 @@ class MainActivity : GeneralConnectedActivity() {
                         .apply { putExtra("url",rdhText) }
                     startActivity(intent)
                 }
-
-                findViewById<LinearLayout>(R.id.rdh_container).addView(rdh)
+                container.post{container.addView(rdh)}
             }
         }
     }
@@ -47,29 +47,30 @@ class MainActivity : GeneralConnectedActivity() {
         findViewById<TextView>(R.id.main_output).text = "Trying to add RDH"
         val rdhText = findViewById<EditText>(R.id.input_rdh)
         val url : String = rdhText.text.toString()
-        if(mService.addRDH(url, findViewById(R.id.main_output))){
-            updateRDHList()
-        }
+        Thread {
+            if (mService.addRDH(url, this)) {
+                updateRDHList()
+            }
+        }.start()
     }
 
     fun doComponentAction(view: View){
         findViewById<TextView>(R.id.main_output).text = "Completing action"
-        val choice = findViewById<Spinner>(R.id.component_action_choice)
-        when(choice.selectedItemId){
-            0L -> mService.updateManifestWithHubs()
-            1L -> mService.deregisterFromAllHubs()
-            2L -> mService.closeRDH()
-            3L -> mService.openRDH()
-            4L -> findViewById<TextView>(R.id.main_output).text = "Component address: " + mService.getComponentAddress()
-            5L -> findViewById<TextView>(R.id.main_output).text = "Resource Discovery Hub Address:" + mService.getRdhAddress()
-            else -> {
-                findViewById<TextView>(R.id.main_output).text = "Not a valid action"
+        Thread {
+            val choice = findViewById<Spinner>(R.id.component_action_choice)
+            when (choice.selectedItemId) {
+                0L -> mService.updateManifestWithHubs(this)
+                1L -> mService.deregisterFromAllHubs(this)
+                2L -> mService.closeRDH(this)
+                3L -> mService.openRDH(this)
+                4L -> updateMainOutput("Component address: " + mService.getComponentAddress())
+                5L -> updateMainOutput("Resource Discovery Hub Address: " + mService.getRdhAddress())
+                else -> {
+                    updateMainOutput("Not a valid action")
+                }
             }
-        }
-        if(choice.selectedItemId in 0L..3L){
-            //findViewById<TextView>(R.id.main_output).text = "Completed " + choice.selectedItem.toString()
-        }
-        updateRDHList()
+            updateRDHList()
+        }.start()
     }
 
 }

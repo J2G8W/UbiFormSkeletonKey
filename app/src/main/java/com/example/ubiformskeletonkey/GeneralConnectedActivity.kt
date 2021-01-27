@@ -38,4 +38,9 @@ abstract class GeneralConnectedActivity : AppCompatActivity() {
     }
 
     abstract fun connectedToUbiForm()
+
+    fun updateMainOutput(text : String){
+        val out = findViewById<TextView>(R.id.main_output)
+        out.post{out.text=text}
+    }
 }

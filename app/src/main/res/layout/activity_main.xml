@@ -23,8 +23,10 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rdh_title">
 
@@ -39,24 +41,24 @@
         android:id="@+id/rdh_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="100dp"
         android:text="@string/rdh_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_output" />
+        app:layout_constraintTop_toBottomOf="@+id/input_rdh" />
 
     <EditText
         android:id="@+id/input_rdh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="16dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/add_rdh_hint"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+        app:layout_constraintTop_toBottomOf="@+id/component_action_choice" />
 
     <Button
         android:id="@+id/add_rdh_button"
@@ -73,11 +75,11 @@
         android:id="@+id/component_action_choice"
         android:layout_width="263dp"
         android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="92dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
         android:entries="@array/component_action_options"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_output" />
 
     <Button
         android:id="@+id/go_button"
