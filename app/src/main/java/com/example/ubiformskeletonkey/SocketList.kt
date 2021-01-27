@@ -4,11 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.widget.AdapterView
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
-import org.w3c.dom.Text
+import android.widget.*
 
 class SocketList : GeneralConnectedActivity() {
     var rdhUrl : String = ""
@@ -24,6 +20,7 @@ class SocketList : GeneralConnectedActivity() {
         if(successfulConnection) {
             main_out.text = "Connected to ${correctComponentUrl}"
         }
+        generateSocketList()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,5 +110,26 @@ class SocketList : GeneralConnectedActivity() {
         shortInputTwo.text.clear()
         longInput.text.clear()
         choices.setSelection(0)
+        generateSocketList()
     }
+
+    fun generateSocketList(){
+        if(mBound){
+            val mainOut = findViewById<TextView>(R.id.main_output)
+            val listContainer = findViewById<LinearLayout>(R.id.socket_container)
+            listContainer.removeAllViews()
+            val values = mService.getSocketDescriptors(correctComponentUrl, mainOut)
+            if(values.isEmpty()) return
+            for(socket in values){
+                val entry = TextView(this)
+                entry.text = socket
+                listContainer.addView(entry)
+            }
+        }
+    }
+
+    fun getComponentManifest(){
+
+    }
+
 }

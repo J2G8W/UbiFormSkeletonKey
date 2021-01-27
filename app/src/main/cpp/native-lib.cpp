@@ -272,3 +272,29 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestRemoveRDH(JNIEnv *env,
         return  false;
     }
 }
+extern "C"
+JNIEXPORT jobjectArray JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_getSocketDescriptors(JNIEnv *env, jobject thiz,
+                                                                        jstring url,
+                                                                        jobject error_text_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
+    try{
+        auto sockets = component->getBackgroundRequester().requestEndpointInfo(componentUrl);
+        jobjectArray ret = env->NewObjectArray(sockets.size(),
+                                               env->FindClass("java/lang/String"),
+                                               env->NewStringUTF(""));
+        int i=0;
+        for(const auto& socket : sockets){
+            std::string text = "ID: " + socket->getString("id") + "\nEndpoint Type: "+ socket->getString("endpointType") +
+                    "\nSocket Type: " + socket->getString("socketType");
+            if(socket->hasMember("listenPort")){text += "\nListening on port: " + std::to_string(socket->getInteger("listenPort"));}
+            else if(socket->hasMember("dialUrl")){text += "\nDialled: " + socket->getString("dialUrl");}
+            env->SetObjectArrayElement(ret,i++, env->NewStringUTF(text.c_str()));
+        }
+        return ret;
+    }catch(std::logic_error &e){
+        reportError(e.what(), env, error_text_object);
+        return env->NewObjectArray(0, env->FindClass("java/lang/String"), env->NewStringUTF(""));
+    }
+}
