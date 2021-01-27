@@ -310,7 +310,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestComponentManifest(JNIE
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     try {
         std::string manifest =
-                component->getBackgroundRequester().requestComponentManifest(componentUrl)->stringify();
+                component->getBackgroundRequester().requestComponentManifest(componentUrl)->prettyStringify();
         return env->NewStringUTF(manifest.c_str());
     }catch(std::logic_error &e){
         writeToText(e.what(), env, activity_object);

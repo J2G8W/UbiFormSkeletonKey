@@ -78,7 +78,7 @@ class SocketList : GeneralConnectedActivity() {
     }
 
     fun socketAction(view : View){
-        val main_out = findViewById<TextView>(R.id.main_output)
+        updateMainOutput("Completing action")
         val shortInputOne = findViewById<EditText>(R.id.short_input_one)
         val shortInputTwo = findViewById<EditText>(R.id.short_input_two)
         val longInput = findViewById<EditText>(R.id.long_input)
