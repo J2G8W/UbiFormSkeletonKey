@@ -13,14 +13,15 @@ class SocketList : GeneralConnectedActivity() {
     var correctComponentUrl: String = ""
 
     override fun connectedToUbiForm() {
-        val main_out = findViewById<TextView>(R.id.main_output)
-        correctComponentUrl = mService.getCorrectRemoteAddress(rdhUrl, componentId,main_out)
-        successfulConnection = correctComponentUrl.startsWith("tcp")
+        Thread {
+            correctComponentUrl = mService.getCorrectRemoteAddress(rdhUrl, componentId, this)
+            successfulConnection = correctComponentUrl.startsWith("tcp")
 
-        if(successfulConnection) {
-            main_out.text = "Connected to ${correctComponentUrl}"
-            generateSocketList()
-        }
+            if (successfulConnection) {
+                updateMainOutput("Connected to ${correctComponentUrl}")
+                generateSocketList()
+            }
+        }.start()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +35,7 @@ class SocketList : GeneralConnectedActivity() {
         val shortInputTwo = findViewById<EditText>(R.id.short_input_two)
         val longInput = findViewById<EditText>(R.id.long_input)
 
-        optionSpinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener{
+        optionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 shortInputOne.text.clear()
                 shortInputTwo.text.clear()
@@ -73,7 +74,7 @@ class SocketList : GeneralConnectedActivity() {
                 shortInputTwo.visibility = INVISIBLE
                 longInput.visibility = INVISIBLE
             }
-        })
+        }
     }
 
     fun socketAction(view : View){
@@ -82,64 +83,44 @@ class SocketList : GeneralConnectedActivity() {
         val shortInputTwo = findViewById<EditText>(R.id.short_input_two)
         val longInput = findViewById<EditText>(R.id.long_input)
         val choices = findViewById<Spinner>(R.id.socket_action_choice)
-        when(choices.selectedItemPosition){
-            0 -> main_out.text = "No action selected"
-            1 -> {
-                TODO()
-            }
-            2->{
-                if(mService.requestCloseSocketsOfType(correctComponentUrl,shortInputOne.text.toString(), main_out)){
-                    main_out.text = "Successfully closed socket"
+        val textInputOne = shortInputOne.text.toString()
+        Thread {
+            when (choices.selectedItemPosition) {
+                0 -> updateMainOutput("No action taken")
+                1 -> {
+                    TODO()
                 }
+                2 -> mService.requestCloseSocketsOfType(correctComponentUrl, textInputOne, this)
+                3 -> mService.requestCreateRDH(correctComponentUrl, this)
+                4 -> mService.requestAddRDH(correctComponentUrl, shortInputOne.text.toString(), this)
+                5 -> mService.requestRemoveRDH(correctComponentUrl, shortInputOne.text.toString(), this)
+                6 -> mService.requestChangeComponentManifest(correctComponentUrl, longInput.text.toString(), this)
             }
-            3->{
-                if(mService.requestCreateRDH(correctComponentUrl,main_out)){
-                    main_out.text = "Successfully created Resource Discovery Hub"
-                }
-            }
-            4->{
-                if(mService.requestAddRDH(correctComponentUrl, shortInputOne.text.toString(),main_out)){
-                    main_out.text = "Successfully connected to ${shortInputOne.text}"
-                }
-            }
-            5->{
-                if(mService.requestRemoveRDH(correctComponentUrl, shortInputOne.text.toString(),main_out)){
-                    main_out.text = "Successfully deregistered from ${shortInputOne.text}"
-                }
-            }
-            6-> {
-                if(mService.requestChangeComponentManifest(correctComponentUrl, longInput.text.toString(),main_out)){
-                    main_out.text = "Successfully changed manifest"
-                }
-            }
-        }
+            generateSocketList()
+        }.start()
+
         shortInputOne.text.clear()
         shortInputTwo.text.clear()
         longInput.text.clear()
         choices.setSelection(0)
-        generateSocketList()
     }
 
     fun generateSocketList(){
         if(mBound){
-            mService.requestComponentManifest(correctComponentUrl, findViewById(R.id.component_manifest))
+            val manifest : String = mService.requestComponentManifest(correctComponentUrl, this)
+            val componentManifest = findViewById<TextView>(R.id.component_manifest)
+            componentManifest.post{componentManifest.setText(manifest)}
 
-
-            val mainOut = findViewById<TextView>(R.id.main_output)
             val listContainer = findViewById<LinearLayout>(R.id.socket_container)
-            listContainer.removeAllViews()
-            val values = mService.getSocketDescriptors(correctComponentUrl, mainOut)
+
+            listContainer.post{listContainer.removeAllViews()}
+            val values = mService.getSocketDescriptors(correctComponentUrl, this)
             if(values.isEmpty()) return
             for(socket in values){
                 val entry = TextView(this)
                 entry.text = socket
-                listContainer.addView(entry)
+                listContainer.post{listContainer.addView(entry)}
             }
         }
     }
-
-    fun getComponentManifest(){
-
-    }
-
 }

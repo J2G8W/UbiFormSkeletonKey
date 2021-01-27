@@ -56,18 +56,18 @@ class UbiFormService : Service() {
     external fun closeRDH(activityObject: GeneralConnectedActivity)
     external fun openRDH(activityObject: GeneralConnectedActivity)
 
-    external fun getComponents(rdhUrl: String, errorTextObject: TextView): Array<String>
+    external fun getComponentsFromRDH(rdhUrl: String, activityObject: GeneralConnectedActivity): Array<String>
 
-    external fun getCorrectRemoteAddress(rdhUrl: String, componentId: String, errorTextObject: TextView) : String
-    external fun getSocketDescriptors(url:String, errorTextObject: TextView): Array<String>
+    external fun getCorrectRemoteAddress(rdhUrl: String, componentId: String, activityObject: GeneralConnectedActivity) : String
+    external fun getSocketDescriptors(url:String, activityObject: GeneralConnectedActivity): Array<String>
 
-    external fun requestCloseSocketsOfType(url:String, endpointType:String, errorTextObject: TextView) :Boolean
-    external fun requestCreateRDH(url: String, errorTextObject: TextView) :Boolean
-    external fun requestCloseRDH(url: String,errorTextObject: TextView) :Boolean
-    external fun requestAddRDH(url:String, rdh:String,errorTextObject: TextView) :Boolean
-    external fun requestRemoveRDH(url:String, rdh: String,errorTextObject: TextView) :Boolean
-    external fun requestComponentManifest(url: String, errorTextObject: TextView) : Boolean
-    external fun requestChangeComponentManifest(url: String, manifest:String, errorTextObject: TextView) : Boolean
+    external fun requestCloseSocketsOfType(url:String, endpointType:String, activityObject: GeneralConnectedActivity)
+    external fun requestCreateRDH(url: String, activityObject: GeneralConnectedActivity)
+    external fun requestCloseRDH(url: String,activityObject: GeneralConnectedActivity)
+    external fun requestAddRDH(url:String, rdh:String,activityObject: GeneralConnectedActivity)
+    external fun requestRemoveRDH(url:String, rdh: String,activityObject: GeneralConnectedActivity)
+    external fun requestComponentManifest(url: String, activityObject: GeneralConnectedActivity) : String
+    external fun requestChangeComponentManifest(url: String, manifest:String, activityObject: GeneralConnectedActivity)
 
 
     companion object {

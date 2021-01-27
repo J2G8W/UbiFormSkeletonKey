@@ -144,8 +144,8 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getRdhAddress(JNIEnv *env, jo
 
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_com_example_ubiformskeletonkey_UbiFormService_getComponents(JNIEnv *env, jobject thiz, jstring rdh_url,
-                                                                 jobject error_text_object) {
+Java_com_example_ubiformskeletonkey_UbiFormService_getComponentsFromRDH(JNIEnv *env, jobject thiz, jstring rdh_url,
+                                                                        jobject activity_object) {
     try{
         jboolean isCopy = false;
         std::string rdhUrl = env->GetStringUTFChars(rdh_url, &isCopy);
@@ -158,7 +158,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getComponents(JNIEnv *env, jo
         }
         return ret;
     } catch (std::logic_error &e) {
-        writeToText(e.what(), env, error_text_object);
+        writeToText(e.what(), env, activity_object);
         return env->NewObjectArray(0,env->FindClass("java/lang/String"),
                                    env->NewStringUTF(""));
     }
@@ -168,7 +168,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
                                                                            jobject thiz,
                                                                            jstring rdh_url,
                                                                            jstring component_id,
-                                                                           jobject error_text_object) {
+                                                                           jobject activity_object) {
     jboolean isCopy = false;
     std::string rdhUrl = env->GetStringUTFChars(rdh_url, &isCopy);
     std::string id = env->GetStringUTFChars(component_id, &isCopy);
@@ -191,98 +191,93 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
         if(found){
             return env->NewStringUTF(correctUrl.c_str());
         }else{
-            writeToText("No URL was successfully connected to", env, error_text_object);
+            writeToText("No URL was successfully connected to", env, activity_object);
         }
     }catch(std::logic_error &e){
-        writeToText(e.what(), env, error_text_object);
+        writeToText(e.what(), env, activity_object);
     }
     return env->NewStringUTF("");
 }
 extern "C"
-JNIEXPORT jboolean JNICALL
+JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseSocketsOfType(JNIEnv *env,
                                                                              jobject thiz,
                                                                              jstring url,
                                                                              jstring endpoint_type,
-                                                                             jobject error_text_object) {
+                                                                             jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     std::string endpointType = env->GetStringUTFChars(endpoint_type, &isCopy);
     try {
         component->getBackgroundRequester().requestCloseSocketOfType(componentUrl, endpointType);
-        return true;
+        writeToText("Successfully closed sockets", env, activity_object);
     }catch (std::logic_error &e){
-        writeToText(e.what(), env, error_text_object);
-        return false;
+        writeToText(e.what(), env, activity_object);
     }
 }
 extern "C"
-JNIEXPORT jboolean JNICALL
+JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_requestCreateRDH(JNIEnv *env, jobject thiz,
                                                                     jstring url,
-                                                                    jobject error_text_object) {
+                                                                    jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     try {
         component->getBackgroundRequester().requestCreateRDH(componentUrl);
-        return true;
+        writeToText("Successfully requested the creation of RDH",env, activity_object);
     }catch (std::logic_error &e){
-        writeToText(e.what(), env, error_text_object);
-        return  false;
+        writeToText(e.what(), env, activity_object);
     }
 }
 extern "C"
-JNIEXPORT jboolean JNICALL
+JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseRDH(JNIEnv *env, jobject thiz,
                                                                    jstring url,
-                                                                   jobject error_text_object) {
+                                                                   jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     try {
         component->getBackgroundRequester().requestCloseRDH(componentUrl);
-        return true;
+        writeToText("Successfully closed RDH",env,activity_object);
     }catch (std::logic_error &e){
-        writeToText(e.what(), env, error_text_object);
-        return  false;
+        writeToText(e.what(), env, activity_object);
     }
 }
 extern "C"
-JNIEXPORT jboolean JNICALL
+JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_requestAddRDH(JNIEnv *env, jobject thiz,
                                                                  jstring url, jstring rdh,
-                                                                 jobject error_text_object) {
+                                                                 jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     std::string rdhUrl = env->GetStringUTFChars(rdh, &isCopy);
     try {
         component->getBackgroundRequester().requestAddRDH(componentUrl, rdhUrl);
-        return true;
+        writeToText("Successfull added RDH",env,activity_object);
     }catch (std::logic_error &e){
-        writeToText(e.what(), env, error_text_object);
-        return  false;
+        writeToText(e.what(), env, activity_object);
     }
 }
 extern "C"
-JNIEXPORT jboolean JNICALL
+JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_requestRemoveRDH(JNIEnv *env, jobject thiz,
                                                                     jstring url, jstring rdh,
-                                                                    jobject error_text_object) {
+                                                                    jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     std::string rdhUrl = env->GetStringUTFChars(rdh, &isCopy);
     try {
         component->getBackgroundRequester().requestRemoveRDH(componentUrl, rdhUrl);
-        return true;
+        writeToText("Successfully removed RDH", env, activity_object);
     }catch (std::logic_error &e){
-        writeToText(e.what(), env, error_text_object);
-        return  false;
+        writeToText(e.what(), env, activity_object);
     }
 }
 extern "C"
 JNIEXPORT jobjectArray JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_getSocketDescriptors(JNIEnv *env, jobject thiz,
                                                                         jstring url,
-                                                                        jobject error_text_object) {
+                                                                        jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     try{
@@ -300,44 +295,44 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getSocketDescriptors(JNIEnv *
         }
         return ret;
     }catch(std::logic_error &e){
-        writeToText(e.what(), env, error_text_object);
+        writeToText(e.what(), env, activity_object);
         return env->NewObjectArray(0, env->FindClass("java/lang/String"), env->NewStringUTF(""));
     }
 }
 
 extern "C"
-JNIEXPORT jboolean JNICALL
+JNIEXPORT jstring JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_requestComponentManifest(JNIEnv *env,
                                                                             jobject thiz,
                                                                             jstring url,
-                                                                            jobject error_text_object) {
+                                                                            jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     try {
         std::string manifest =
                 component->getBackgroundRequester().requestComponentManifest(componentUrl)->stringify();
-        writeToText(manifest, env, error_text_object);
-        return true;
+        return env->NewStringUTF(manifest.c_str());
     }catch(std::logic_error &e){
-        writeToText(e.what(), env, error_text_object);
-        return false;
+        writeToText(e.what(), env, activity_object);
+        return env->NewStringUTF("");
     }
-}extern "C"
-JNIEXPORT jboolean JNICALL
+}
+
+extern "C"
+JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_requestChangeComponentManifest(JNIEnv *env,
                                                                                   jobject thiz,
                                                                                   jstring url,
                                                                                   jstring manifest,
-                                                                                  jobject error_text_object) {
+                                                                                  jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     std::string manifestText = env->GetStringUTFChars(manifest, &isCopy);
     try {
         ComponentManifest componentManifest(manifestText.c_str(), component->getSystemSchemas());
         component->getBackgroundRequester().requestUpdateComponentManifest(componentUrl,componentManifest);
-        return true;
+        writeToText("Successfully updated manifest", env, activity_object);
     } catch (std::logic_error& e) {
-        writeToText(e.what(), env, error_text_object);
-        return false;
+        writeToText(e.what(), env, activity_object);
     }
 }

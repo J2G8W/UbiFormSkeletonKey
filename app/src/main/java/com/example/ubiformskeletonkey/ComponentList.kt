@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 
 class ComponentList : GeneralConnectedActivity() {
     private var rdhUrl : String = ""
@@ -18,30 +17,35 @@ class ComponentList : GeneralConnectedActivity() {
         setContentView(R.layout.activity_component_list)
         rdhUrl = intent.getStringExtra("url").toString()
     }
-    private fun updateComponentList(){
-        if(mBound) {
-            findViewById<LinearLayout>(R.id.component_container).removeAllViews()
-            val components: Array<String> = mService.getComponents(rdhUrl, findViewById(R.id.main_output))
-            if (!components.isEmpty()){
-                for (componentId in components) {
-                    val component = Button(this)
-                    component.text = componentId
-                    component.layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        ActionBar.LayoutParams.WRAP_CONTENT
-                    )
-                    component.setOnClickListener {
-                        val intent = Intent(it.context,SocketList::class.java)
-                            .apply {
-                                putExtra("rdh",rdhUrl)
-                                putExtra("id", componentId)
-                            }
-                        startActivity(intent)
-                    }
 
-                    findViewById<LinearLayout>(R.id.component_container).addView(component)
+    private fun updateComponentList() {
+        val container = findViewById<LinearLayout>(R.id.component_container)
+        Thread {
+            if (mBound) {
+                container.post { container.removeAllViews() }
+                val components: Array<String> = mService.getComponentsFromRDH(rdhUrl, this)
+                if (!components.isEmpty()) {
+                    for (componentId in components) {
+                        val component = Button(this)
+                        component.text = componentId
+                        component.layoutParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                ActionBar.LayoutParams.WRAP_CONTENT
+                        )
+                        component.setOnClickListener {
+                            val intent = Intent(it.context, SocketList::class.java)
+                                    .apply {
+                                        putExtra("rdh", rdhUrl)
+                                        putExtra("id", componentId)
+                                    }
+                            startActivity(intent)
+                        }
+
+                        container.post { container.addView(component) }
+                    }
+                    updateMainOutput("Updated components for RDH")
                 }
             }
-        }
+        }.start()
     }
 }
