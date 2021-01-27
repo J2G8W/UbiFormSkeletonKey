@@ -59,6 +59,8 @@ class UbiFormService : Service() {
     external fun requestCloseRDH(url: String,errorTextObject: TextView) :Boolean
     external fun requestAddRDH(url:String, rdh:String,errorTextObject: TextView) :Boolean
     external fun requestRemoveRDH(url:String, rdh: String,errorTextObject: TextView) :Boolean
+    external fun requestComponentManifest(url: String, errorTextObject: TextView) : Boolean
+    external fun requestChangeComponentManifest(url: String, manifest:String, errorTextObject: TextView) : Boolean
 
 
     companion object {

@@ -21,10 +21,13 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="410dp"
+        android:layout_height="197dp"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/socket_title">
 
@@ -39,22 +42,22 @@
         android:id="@+id/socket_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="8dp"
         android:text="@string/socket_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_output" />
+        app:layout_constraintTop_toBottomOf="@+id/long_input" />
 
     <Spinner
         android:id="@+id/socket_action_choice"
         android:layout_width="263dp"
         android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="220dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
         android:entries="@array/socket_action_options"
         android:prompt="@string/choose_action"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_output" />
 
     <Button
         android:id="@+id/socket_go_button"
@@ -103,5 +106,18 @@
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/socket_action_choice" />
+
+    <TextView
+        android:id="@+id/component_manifest"
+        android:layout_width="410dp"
+        android:layout_height="159dp"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/component_manifest_default"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

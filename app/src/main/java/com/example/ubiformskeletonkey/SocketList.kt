@@ -19,8 +19,8 @@ class SocketList : GeneralConnectedActivity() {
 
         if(successfulConnection) {
             main_out.text = "Connected to ${correctComponentUrl}"
+            generateSocketList()
         }
-        generateSocketList()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,10 +41,13 @@ class SocketList : GeneralConnectedActivity() {
                 longInput.text.clear()
                 when(position){
                     1 -> shortInputOne.hint = "Socket ID"
-                    2 -> shortInputOne.hint = "Socket Hint"
+                    2 -> shortInputOne.hint = "Endpoint Type"
                     4 -> shortInputOne.hint = "RDH address"
                     5 -> shortInputOne.hint = "RDH address"
-                    6 -> longInput.hint = "Manifest input"
+                    6 -> {
+                        longInput.hint = "Manifest input"
+                        longInput.setText(findViewById<TextView>(R.id.component_manifest).text.toString())
+                    }
                 }
                 when(position){
                     1,2,4,5 -> {
@@ -104,7 +107,11 @@ class SocketList : GeneralConnectedActivity() {
                     main_out.text = "Successfully deregistered from ${shortInputOne.text}"
                 }
             }
-            6-> TODO()
+            6-> {
+                if(mService.requestChangeComponentManifest(correctComponentUrl, longInput.text.toString(),main_out)){
+                    main_out.text = "Successfully changed manifest"
+                }
+            }
         }
         shortInputOne.text.clear()
         shortInputTwo.text.clear()
@@ -115,6 +122,9 @@ class SocketList : GeneralConnectedActivity() {
 
     fun generateSocketList(){
         if(mBound){
+            mService.requestComponentManifest(correctComponentUrl, findViewById(R.id.component_manifest))
+
+
             val mainOut = findViewById<TextView>(R.id.main_output)
             val listContainer = findViewById<LinearLayout>(R.id.socket_container)
             listContainer.removeAllViews()

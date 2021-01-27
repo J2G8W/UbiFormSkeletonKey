@@ -7,6 +7,7 @@
     <string name="component_title">Components</string>
     <string name="socket_title">Sockets</string>
     <string name="choose_action">Choose Action</string>
+    <string name="component_manifest_default">Manifest Not Yet Loaded</string>
     <string-array name="component_action_options">
         <item>Update Manifest With Hubs</item>
         <item>Deregister from all hubs</item>

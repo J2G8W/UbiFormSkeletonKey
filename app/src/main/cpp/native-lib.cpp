@@ -298,3 +298,40 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getSocketDescriptors(JNIEnv *
         return env->NewObjectArray(0, env->FindClass("java/lang/String"), env->NewStringUTF(""));
     }
 }
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestComponentManifest(JNIEnv *env,
+                                                                            jobject thiz,
+                                                                            jstring url,
+                                                                            jobject error_text_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
+    try {
+        std::string manifest =
+                component->getBackgroundRequester().requestComponentManifest(componentUrl)->stringify();
+        reportError(manifest,env, error_text_object);
+        return true;
+    }catch(std::logic_error &e){
+        reportError(e.what(),env, error_text_object);
+        return false;
+    }
+}extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestChangeComponentManifest(JNIEnv *env,
+                                                                                  jobject thiz,
+                                                                                  jstring url,
+                                                                                  jstring manifest,
+                                                                                  jobject error_text_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
+    std::string manifestText = env->GetStringUTFChars(manifest, &isCopy);
+    try {
+        ComponentManifest componentManifest(manifestText.c_str(), component->getSystemSchemas());
+        component->getBackgroundRequester().requestUpdateComponentManifest(componentUrl,componentManifest);
+        return true;
+    } catch (std::logic_error& e) {
+        reportError(e.what(),env, error_text_object);
+        return false;
+    }
+}
