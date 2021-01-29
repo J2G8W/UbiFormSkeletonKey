@@ -36,15 +36,19 @@ class NotificationPublisher : NotificationListenerService() {
 
         if (ubiformServiceBound) {
             if (sbn != null) {
+                var byteArray: ByteArray? = null
+
                 val icon = sbn.notification.smallIcon.loadDrawable(this)
-                var bitmap = icon.toBitmap(
-                    icon.intrinsicWidth,
-                    icon.intrinsicHeight,
-                    Bitmap.Config.ARGB_8888
-                )
-                val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                val byteArray = Base64.encode(stream.toByteArray(),Base64.NO_WRAP)
+                if (icon != null) {
+                    val bitmap = icon.toBitmap(
+                        icon.intrinsicWidth,
+                        icon.intrinsicHeight,
+                        Bitmap.Config.ARGB_8888
+                    )
+                    val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    byteArray = Base64.encode(stream.toByteArray(), Base64.NO_WRAP)
+                }
 
                 ubiFormService.publishNotification(
                     sbn.notification.extras.getString(EXTRA_TITLE),

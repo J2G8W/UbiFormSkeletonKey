@@ -370,9 +370,6 @@ Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *e
     std::string extraText = (extra_text == nullptr) ? "No Extra Text" : env->GetStringUTFChars(
             extra_text, &isCopy);
 
-    jbyte* bufferPtr = env->GetByteArrayElements(icon_image, &isCopy);
-    jsize lengthOfArray = env->GetArrayLength(icon_image);
-    std::string iconText((char*) bufferPtr, lengthOfArray);
 
     auto endpoints = component->getEndpointsByType("notificationPublisher");
     if (!endpoints->empty()) {
@@ -380,7 +377,12 @@ Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *e
         SocketMessage sm;
         sm.addMember("title", notificationTitle);
         sm.addMember("extraText", extraText);
-        sm.addMember("icon",iconText);
+        if(icon_image != nullptr) {
+            jbyte *bufferPtr = env->GetByteArrayElements(icon_image, &isCopy);
+            jsize lengthOfArray = env->GetArrayLength(icon_image);
+            std::string iconText((char *) bufferPtr, lengthOfArray);
+            sm.addMember("icon",iconText);
+        }
         try {
             publisherEndpoint->sendMessage(sm);
             //writeToText("Success sending message " + sm.stringify(), env, activity_object);

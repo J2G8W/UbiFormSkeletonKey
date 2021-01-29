@@ -98,7 +98,7 @@ class UbiFormService : Service() {
         activityObject: GeneralConnectedActivity
     )
 
-    external fun publishNotification(title: String?, extraTest: String?, iconImage : ByteArray)
+    external fun publishNotification(title: String?, extraTest: String?, iconImage : ByteArray?)
 
 
     companion object {
