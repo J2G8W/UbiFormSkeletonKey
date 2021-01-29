@@ -15,6 +15,7 @@
         <item>Open Resource Discovery Hub</item>
         <item>Get Background Address</item>
         <item>Get RDH address</item>
+        <item>Add Resource Discovery Hub</item>
     </string-array>
     <string-array name="rdh_action_options">
         <item>Request Close Resource Discovery Hub</item>

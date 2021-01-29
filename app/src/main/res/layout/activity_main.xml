@@ -58,18 +58,8 @@
         android:hint="@string/add_rdh_hint"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/component_action_choice" />
-
-    <Button
-        android:id="@+id/add_rdh_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:onClick="addRDH"
-        android:text="@string/add_rdh"
-        app:layout_constraintBottom_toBottomOf="@+id/input_rdh"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/input_rdh" />
+        app:layout_constraintTop_toBottomOf="@+id/component_action_choice"
+        tools:visibility="invisible" />
 
     <Spinner
         android:id="@+id/component_action_choice"
@@ -88,6 +78,7 @@
         android:layout_marginEnd="22dp"
         android:onClick="doComponentAction"
         android:text="@string/go"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/component_action_choice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/component_action_choice" />

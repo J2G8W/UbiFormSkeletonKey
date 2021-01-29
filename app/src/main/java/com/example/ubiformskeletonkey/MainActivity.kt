@@ -4,6 +4,8 @@ import android.app.ActionBar
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.*
 
 class MainActivity : GeneralConnectedActivity() {
@@ -14,6 +16,22 @@ class MainActivity : GeneralConnectedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val optionSpinner = findViewById<Spinner>(R.id.component_action_choice)
+        val textInput = findViewById<EditText>(R.id.input_rdh)
+        optionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when(position){
+                    6 -> textInput.visibility = VISIBLE
+                    else -> {
+                        textInput.visibility = INVISIBLE
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                textInput.visibility = INVISIBLE
+            }
+        }
     }
 
     override fun onResume() {
@@ -43,19 +61,9 @@ class MainActivity : GeneralConnectedActivity() {
         }
     }
 
-    fun addRDH(view: View){
-        findViewById<TextView>(R.id.main_output).text = "Trying to add RDH"
-        val rdhText = findViewById<EditText>(R.id.input_rdh)
-        val url : String = rdhText.text.toString()
-        Thread {
-            if (mService.addRDH(url, this)) {
-                updateRDHList()
-            }
-        }.start()
-    }
-
     fun doComponentAction(view: View){
         findViewById<TextView>(R.id.main_output).text = "Completing action"
+        val textInput = findViewById<EditText>(R.id.input_rdh)
         Thread {
             val choice = findViewById<Spinner>(R.id.component_action_choice)
             when (choice.selectedItemId) {
@@ -65,6 +73,7 @@ class MainActivity : GeneralConnectedActivity() {
                 3L -> mService.openRDH(this)
                 4L -> updateMainOutput("Component address: " + mService.getComponentAddress())
                 5L -> updateMainOutput("Resource Discovery Hub Address: " + mService.getRdhAddress())
+                6L -> mService.addRDH(textInput.text.toString(), this)
                 else -> {
                     updateMainOutput("Not a valid action")
                 }
