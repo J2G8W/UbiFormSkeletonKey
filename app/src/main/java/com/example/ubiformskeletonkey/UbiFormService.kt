@@ -69,6 +69,8 @@ class UbiFormService : Service() {
     external fun requestComponentManifest(url: String, activityObject: GeneralConnectedActivity) : String
     external fun requestChangeComponentManifest(url: String, manifest:String, activityObject: GeneralConnectedActivity)
 
+    external fun publishNotification(title:String?, extraTest:String?)
+
 
     companion object {
         // Used to load the 'native-lib' library on application startup.

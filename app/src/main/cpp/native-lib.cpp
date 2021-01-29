@@ -24,6 +24,15 @@ Java_com_example_ubiformskeletonkey_UbiFormService_startComponent(JNIEnv *env, j
             jboolean isCopy = false;
             std::string componentUrl = env->GetStringUTFChars(ip_address, &isCopy);
             component = new Component(componentUrl);
+
+            std::shared_ptr<EndpointSchema> notificationPublisherSchema = std::make_shared<EndpointSchema>();
+            notificationPublisherSchema->addProperty("title",ValueType::String);
+            notificationPublisherSchema->addRequired("title");
+            notificationPublisherSchema->addProperty("extraText", ValueType::String);
+            notificationPublisherSchema->addRequired("extraText");
+            component->getComponentManifest().addEndpoint(SocketType::Publisher,"notificationPublisher",
+                                                          nullptr, notificationPublisherSchema);
+
         }
         if(component->getBackgroundPort() == -1) {
             component->startBackgroundListen();
@@ -334,5 +343,26 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestChangeComponentManifes
         writeToText("Successfully updated manifest", env, activity_object);
     } catch (std::logic_error& e) {
         writeToText(e.what(), env, activity_object);
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *env, jobject thiz,
+        jstring title, jstring extra_text) {
+    jboolean isCopy = false;
+    std::string notificationTitle = (title == nullptr) ? "No Title" : env->GetStringUTFChars(title,&isCopy);
+    std::string extraText = (extra_text == nullptr) ? "No Extra Text" : env->GetStringUTFChars(extra_text,&isCopy);
+    auto endpoints = component->getEndpointsByType("notificationPublisher");
+    if(!endpoints->empty()){
+        auto publisherEndpoint = component->castToDataSenderEndpoint(endpoints->at(0));
+        SocketMessage sm;
+        sm.addMember("title", notificationTitle);
+        sm.addMember("extraText", extraText);
+        try {
+            publisherEndpoint->sendMessage(sm);
+            //writeToText("Success sending message " + sm.stringify(), env, activity_object);
+        } catch (std::logic_error &e) {
+            //writeToText(e.what(),env, activity_object);
+        }
     }
 }
