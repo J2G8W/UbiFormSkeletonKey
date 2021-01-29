@@ -21,9 +21,9 @@ class ComponentList : GeneralConnectedActivity() {
     private fun updateComponentList() {
         val container = findViewById<LinearLayout>(R.id.component_container)
         Thread {
-            if (mBound) {
+            if (ubiformServiceBound) {
                 container.post { container.removeAllViews() }
-                val components: Array<String> = mService.getComponentsFromRDH(rdhUrl, this)
+                val components: Array<String> = ubiFormService.getComponentsFromRDH(rdhUrl, this)
                 if (!components.isEmpty()) {
                     for (componentId in components) {
                         val component = Button(this)

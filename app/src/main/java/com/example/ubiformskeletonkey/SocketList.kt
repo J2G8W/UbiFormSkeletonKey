@@ -14,7 +14,7 @@ class SocketList : GeneralConnectedActivity() {
 
     override fun connectedToUbiForm() {
         Thread {
-            correctComponentUrl = mService.getCorrectRemoteAddress(rdhUrl, componentId, this)
+            correctComponentUrl = ubiFormService.getCorrectRemoteAddress(rdhUrl, componentId, this)
             successfulConnection = correctComponentUrl.startsWith("tcp")
 
             if (successfulConnection) {
@@ -90,11 +90,11 @@ class SocketList : GeneralConnectedActivity() {
                 1 -> {
                     TODO()
                 }
-                2 -> mService.requestCloseSocketsOfType(correctComponentUrl, textInputOne, this)
-                3 -> mService.requestCreateRDH(correctComponentUrl, this)
-                4 -> mService.requestAddRDH(correctComponentUrl, shortInputOne.text.toString(), this)
-                5 -> mService.requestRemoveRDH(correctComponentUrl, shortInputOne.text.toString(), this)
-                6 -> mService.requestChangeComponentManifest(correctComponentUrl, longInput.text.toString(), this)
+                2 -> ubiFormService.requestCloseSocketsOfType(correctComponentUrl, textInputOne, this)
+                3 -> ubiFormService.requestCreateRDH(correctComponentUrl, this)
+                4 -> ubiFormService.requestAddRDH(correctComponentUrl, shortInputOne.text.toString(), this)
+                5 -> ubiFormService.requestRemoveRDH(correctComponentUrl, shortInputOne.text.toString(), this)
+                6 -> ubiFormService.requestChangeComponentManifest(correctComponentUrl, longInput.text.toString(), this)
             }
             generateSocketList()
         }.start()
@@ -106,15 +106,15 @@ class SocketList : GeneralConnectedActivity() {
     }
 
     fun generateSocketList(){
-        if(mBound){
-            val manifest : String = mService.requestComponentManifest(correctComponentUrl, this)
+        if(ubiformServiceBound){
+            val manifest : String = ubiFormService.requestComponentManifest(correctComponentUrl, this)
             val componentManifest = findViewById<TextView>(R.id.component_manifest)
             componentManifest.post{componentManifest.setText(manifest)}
 
             val listContainer = findViewById<LinearLayout>(R.id.socket_container)
 
             listContainer.post{listContainer.removeAllViews()}
-            val values = mService.getSocketDescriptors(correctComponentUrl, this)
+            val values = ubiFormService.getSocketDescriptors(correctComponentUrl, this)
             if(values.isEmpty()) return
             for(socket in values){
                 val entry = TextView(this)
