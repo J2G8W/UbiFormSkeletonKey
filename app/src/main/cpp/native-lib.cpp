@@ -372,7 +372,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *e
 
     jbyte* bufferPtr = env->GetByteArrayElements(icon_image, &isCopy);
     jsize lengthOfArray = env->GetArrayLength(icon_image);
-    std::string iconText((char*) bufferPtr);
+    std::string iconText((char*) bufferPtr, lengthOfArray);
 
     auto endpoints = component->getEndpointsByType("notificationPublisher");
     if (!endpoints->empty()) {

@@ -44,7 +44,7 @@ class NotificationPublisher : NotificationListenerService() {
                 )
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                val byteArray = Base64.encode(stream.toByteArray(),Base64.DEFAULT)
+                val byteArray = Base64.encode(stream.toByteArray(),Base64.NO_WRAP)
 
                 ubiFormService.publishNotification(
                     sbn.notification.extras.getString(EXTRA_TITLE),
