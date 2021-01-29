@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 
 class ComponentList : GeneralConnectedActivity() {
-    private var rdhUrl : String = ""
+    private var rdhUrl: String = ""
     override fun connectedToUbiForm() {
         updateComponentList()
     }
@@ -29,15 +29,15 @@ class ComponentList : GeneralConnectedActivity() {
                         val component = Button(this)
                         component.text = componentId
                         component.layoutParams = LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                ActionBar.LayoutParams.WRAP_CONTENT
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            ActionBar.LayoutParams.WRAP_CONTENT
                         )
                         component.setOnClickListener {
                             val intent = Intent(it.context, SocketList::class.java)
-                                    .apply {
-                                        putExtra("rdh", rdhUrl)
-                                        putExtra("id", componentId)
-                                    }
+                                .apply {
+                                    putExtra("rdh", rdhUrl)
+                                    putExtra("id", componentId)
+                                }
                             startActivity(intent)
                         }
 

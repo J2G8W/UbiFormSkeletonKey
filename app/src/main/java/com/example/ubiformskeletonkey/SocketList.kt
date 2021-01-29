@@ -7,7 +7,7 @@ import android.view.View.VISIBLE
 import android.widget.*
 
 class SocketList : GeneralConnectedActivity() {
-    var rdhUrl : String = ""
+    var rdhUrl: String = ""
     var componentId: String = ""
     var successfulConnection: Boolean = false
     var correctComponentUrl: String = ""
@@ -35,12 +35,17 @@ class SocketList : GeneralConnectedActivity() {
         val shortInputTwo = findViewById<EditText>(R.id.short_input_two)
         val longInput = findViewById<EditText>(R.id.long_input)
 
-        optionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        optionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 shortInputOne.text.clear()
                 shortInputTwo.text.clear()
                 longInput.text.clear()
-                when(position){
+                when (position) {
                     1 -> shortInputOne.hint = "Socket ID"
                     2 -> shortInputOne.hint = "Endpoint Type"
                     4 -> shortInputOne.hint = "RDH address"
@@ -50,13 +55,13 @@ class SocketList : GeneralConnectedActivity() {
                         longInput.setText(findViewById<TextView>(R.id.component_manifest).text.toString())
                     }
                 }
-                when(position){
-                    1,2,4,5 -> {
+                when (position) {
+                    1, 2, 4, 5 -> {
                         shortInputOne.visibility = VISIBLE
                         shortInputTwo.visibility = INVISIBLE
                         longInput.visibility = INVISIBLE
                     }
-                    6 ->{
+                    6 -> {
                         shortInputOne.visibility = INVISIBLE
                         shortInputTwo.visibility = INVISIBLE
                         longInput.visibility = VISIBLE
@@ -77,7 +82,7 @@ class SocketList : GeneralConnectedActivity() {
         }
     }
 
-    fun socketAction(view : View){
+    fun socketAction(view: View) {
         updateMainOutput("Completing action")
         val shortInputOne = findViewById<EditText>(R.id.short_input_one)
         val shortInputTwo = findViewById<EditText>(R.id.short_input_two)
@@ -90,11 +95,27 @@ class SocketList : GeneralConnectedActivity() {
                 1 -> {
                     TODO()
                 }
-                2 -> ubiFormService.requestCloseSocketsOfType(correctComponentUrl, textInputOne, this)
+                2 -> ubiFormService.requestCloseSocketsOfType(
+                    correctComponentUrl,
+                    textInputOne,
+                    this
+                )
                 3 -> ubiFormService.requestCreateRDH(correctComponentUrl, this)
-                4 -> ubiFormService.requestAddRDH(correctComponentUrl, shortInputOne.text.toString(), this)
-                5 -> ubiFormService.requestRemoveRDH(correctComponentUrl, shortInputOne.text.toString(), this)
-                6 -> ubiFormService.requestChangeComponentManifest(correctComponentUrl, longInput.text.toString(), this)
+                4 -> ubiFormService.requestAddRDH(
+                    correctComponentUrl,
+                    shortInputOne.text.toString(),
+                    this
+                )
+                5 -> ubiFormService.requestRemoveRDH(
+                    correctComponentUrl,
+                    shortInputOne.text.toString(),
+                    this
+                )
+                6 -> ubiFormService.requestChangeComponentManifest(
+                    correctComponentUrl,
+                    longInput.text.toString(),
+                    this
+                )
             }
             generateSocketList()
         }.start()
@@ -105,21 +126,22 @@ class SocketList : GeneralConnectedActivity() {
         choices.setSelection(0)
     }
 
-    fun generateSocketList(){
-        if(ubiformServiceBound){
-            val manifest : String = ubiFormService.requestComponentManifest(correctComponentUrl, this)
+    fun generateSocketList() {
+        if (ubiformServiceBound) {
+            val manifest: String =
+                ubiFormService.requestComponentManifest(correctComponentUrl, this)
             val componentManifest = findViewById<TextView>(R.id.component_manifest)
-            componentManifest.post{componentManifest.setText(manifest)}
+            componentManifest.post { componentManifest.text = manifest }
 
             val listContainer = findViewById<LinearLayout>(R.id.socket_container)
 
-            listContainer.post{listContainer.removeAllViews()}
+            listContainer.post { listContainer.removeAllViews() }
             val values = ubiFormService.getSocketDescriptors(correctComponentUrl, this)
-            if(values.isEmpty()) return
-            for(socket in values){
+            if (values.isEmpty()) return
+            for (socket in values) {
                 val entry = TextView(this)
                 entry.text = socket
-                listContainer.post{listContainer.addView(entry)}
+                listContainer.post { listContainer.addView(entry) }
             }
         }
     }

@@ -2,16 +2,15 @@ package com.example.ubiformskeletonkey
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
-import android.os.Bundle
 import android.os.IBinder
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 
 abstract class GeneralConnectedActivity : AppCompatActivity() {
     protected lateinit var ubiFormService: UbiFormService
@@ -32,7 +31,7 @@ abstract class GeneralConnectedActivity : AppCompatActivity() {
 
     protected val notificationPublisherConnection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            Log.d("NOTIFICATION","Connected to Notification publisher")
+            Log.d("NOTIFICATION", "Connected to Notification publisher")
 
             // Create the NotificationChannel, but only on API 26+ because
             // the NotificationChannel class is new and not in the support library
@@ -47,7 +46,7 @@ abstract class GeneralConnectedActivity : AppCompatActivity() {
                 val notificationManager: NotificationManager =
                     getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.createNotificationChannel(channel)
-                Log.d("NOTIFICATION","Created channel")
+                Log.d("NOTIFICATION", "Created channel")
             }
         }
 
@@ -56,7 +55,7 @@ abstract class GeneralConnectedActivity : AppCompatActivity() {
     }
 
 
-    override fun onStart(){
+    override fun onStart() {
         super.onStart()
         Intent(this, UbiFormService::class.java).also { intent ->
             bindService(intent, ubiformServiceConnection, Context.BIND_AUTO_CREATE)
@@ -75,8 +74,8 @@ abstract class GeneralConnectedActivity : AppCompatActivity() {
 
     abstract fun connectedToUbiForm()
 
-    fun updateMainOutput(text : String){
+    fun updateMainOutput(text: String) {
         val out = findViewById<TextView>(R.id.main_output)
-        out.post{out.text=text}
+        out.post { out.text = text }
     }
 }

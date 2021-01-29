@@ -6,22 +6,22 @@ import android.net.wifi.WifiManager
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
-import android.widget.TextView
 
 class UbiFormService : Service() {
     private val binder = LocalBinder()
 
-    override fun onCreate(){
+    override fun onCreate() {
         val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
         val numAddress = wifiManager.connectionInfo.ipAddress.toLong()
-        val ipAddress = "tcp://${(numAddress and 0xff)}.${(numAddress shr 8 and 0xff)}.${(numAddress shr 16 and 0xff)}.${(numAddress shr 24 and 0xff)}"
+        val ipAddress =
+            "tcp://${(numAddress and 0xff)}.${(numAddress shr 8 and 0xff)}.${(numAddress shr 16 and 0xff)}.${(numAddress shr 24 and 0xff)}"
 
         val componentMsg = startComponent(ipAddress)
-        if (componentMsg.isNotEmpty()){
+        if (componentMsg.isNotEmpty()) {
             Log.e("Component Creation", componentMsg)
         }
         val rdhMsg = startRDH()
-        if(rdhMsg.isNotEmpty()){
+        if (rdhMsg.isNotEmpty()) {
             Log.e("RDH Creation", rdhMsg)
         }
     }
@@ -41,13 +41,13 @@ class UbiFormService : Service() {
         fun getService(): UbiFormService = this@UbiFormService
     }
 
-    external fun startComponent(ipAddress: String) : String
-    external fun startRDH() : String
+    external fun startComponent(ipAddress: String): String
+    external fun startRDH(): String
 
-    external fun getComponentAddress() : String
-    external fun getRdhAddress() : String
+    external fun getComponentAddress(): String
+    external fun getRdhAddress(): String
 
-    external fun endComponent() : Unit
+    external fun endComponent(): Unit
     external fun addRDH(url: String, activityObject: GeneralConnectedActivity): Boolean
     external fun getRDHUrls(): Array<String>
 
@@ -56,20 +56,49 @@ class UbiFormService : Service() {
     external fun closeRDH(activityObject: GeneralConnectedActivity)
     external fun openRDH(activityObject: GeneralConnectedActivity)
 
-    external fun getComponentsFromRDH(rdhUrl: String, activityObject: GeneralConnectedActivity): Array<String>
+    external fun getComponentsFromRDH(
+        rdhUrl: String,
+        activityObject: GeneralConnectedActivity
+    ): Array<String>
 
-    external fun getCorrectRemoteAddress(rdhUrl: String, componentId: String, activityObject: GeneralConnectedActivity) : String
-    external fun getSocketDescriptors(url:String, activityObject: GeneralConnectedActivity): Array<String>
+    external fun getCorrectRemoteAddress(
+        rdhUrl: String,
+        componentId: String,
+        activityObject: GeneralConnectedActivity
+    ): String
 
-    external fun requestCloseSocketsOfType(url:String, endpointType:String, activityObject: GeneralConnectedActivity)
+    external fun getSocketDescriptors(
+        url: String,
+        activityObject: GeneralConnectedActivity
+    ): Array<String>
+
+    external fun requestCloseSocketsOfType(
+        url: String,
+        endpointType: String,
+        activityObject: GeneralConnectedActivity
+    )
+
     external fun requestCreateRDH(url: String, activityObject: GeneralConnectedActivity)
-    external fun requestCloseRDH(url: String,activityObject: GeneralConnectedActivity)
-    external fun requestAddRDH(url:String, rdh:String,activityObject: GeneralConnectedActivity)
-    external fun requestRemoveRDH(url:String, rdh: String,activityObject: GeneralConnectedActivity)
-    external fun requestComponentManifest(url: String, activityObject: GeneralConnectedActivity) : String
-    external fun requestChangeComponentManifest(url: String, manifest:String, activityObject: GeneralConnectedActivity)
+    external fun requestCloseRDH(url: String, activityObject: GeneralConnectedActivity)
+    external fun requestAddRDH(url: String, rdh: String, activityObject: GeneralConnectedActivity)
+    external fun requestRemoveRDH(
+        url: String,
+        rdh: String,
+        activityObject: GeneralConnectedActivity
+    )
 
-    external fun publishNotification(title:String?, extraTest:String?)
+    external fun requestComponentManifest(
+        url: String,
+        activityObject: GeneralConnectedActivity
+    ): String
+
+    external fun requestChangeComponentManifest(
+        url: String,
+        manifest: String,
+        activityObject: GeneralConnectedActivity
+    )
+
+    external fun publishNotification(title: String?, extraTest: String?, iconImage : ByteArray)
 
 
     companion object {

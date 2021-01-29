@@ -20,9 +20,14 @@ class MainActivity : GeneralConnectedActivity() {
         setContentView(R.layout.activity_main)
         val optionSpinner = findViewById<Spinner>(R.id.component_action_choice)
         val textInput = findViewById<EditText>(R.id.input_rdh)
-        optionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when(position){
+        optionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (position) {
                     6 -> textInput.visibility = VISIBLE
                     else -> {
                         textInput.visibility = INVISIBLE
@@ -41,10 +46,10 @@ class MainActivity : GeneralConnectedActivity() {
         updateRDHList()
     }
 
-    private fun updateRDHList(){
-        if(ubiformServiceBound) {
+    private fun updateRDHList() {
+        if (ubiformServiceBound) {
             val container = findViewById<LinearLayout>(R.id.rdh_container)
-            container.post{container.removeAllViews()}
+            container.post { container.removeAllViews() }
             val rdhs: Array<String> = ubiFormService.getRDHUrls()
             for (rdhText in rdhs) {
                 val rdh = Button(this)
@@ -54,16 +59,16 @@ class MainActivity : GeneralConnectedActivity() {
                     ActionBar.LayoutParams.WRAP_CONTENT
                 )
                 rdh.setOnClickListener {
-                    val intent = Intent(it.context,ComponentList::class.java)
-                        .apply { putExtra("url",rdhText) }
+                    val intent = Intent(it.context, ComponentList::class.java)
+                        .apply { putExtra("url", rdhText) }
                     startActivity(intent)
                 }
-                container.post{container.addView(rdh)}
+                container.post { container.addView(rdh) }
             }
         }
     }
 
-    fun doComponentAction(view: View){
+    fun doComponentAction(view: View) {
         findViewById<TextView>(R.id.main_output).text = "Completing action"
         val textInput = findViewById<EditText>(R.id.input_rdh)
         Thread {
@@ -76,11 +81,12 @@ class MainActivity : GeneralConnectedActivity() {
                         .setContentText("Much longer text that cannot fit one line...")
                         .setStyle(
                             NotificationCompat.BigTextStyle()
-                            .bigText("Much longer text that cannot fit one line..."))
+                                .bigText("Much longer text that cannot fit one line...")
+                        )
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-                    with(NotificationManagerCompat.from(applicationContext)){
-                        notify(1002,builder.build())
+                    with(NotificationManagerCompat.from(applicationContext)) {
+                        notify(1002, builder.build())
                     }
                 }//ubiFormService.updateManifestWithHubs(this)
                 1L -> ubiFormService.deregisterFromAllHubs(this)

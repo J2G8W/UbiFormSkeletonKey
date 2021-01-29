@@ -2,16 +2,19 @@ package com.example.ubiformskeletonkey
 
 import android.app.Notification.EXTRA_TEXT
 import android.app.Notification.EXTRA_TITLE
-import android.app.Service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Binder
+import android.graphics.Bitmap
 import android.os.IBinder
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import android.util.Base64
 import android.util.Log
+import androidx.core.graphics.drawable.toBitmap
+import java.io.ByteArrayOutputStream
+
 
 class NotificationPublisher : NotificationListenerService() {
     private lateinit var ubiFormService: UbiFormService
@@ -30,15 +33,27 @@ class NotificationPublisher : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
+
         if (ubiformServiceBound) {
             if (sbn != null) {
+                val icon = sbn.notification.smallIcon.loadDrawable(this)
+                var bitmap = icon.toBitmap(
+                    icon.intrinsicWidth,
+                    icon.intrinsicHeight,
+                    Bitmap.Config.ARGB_8888
+                )
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                val byteArray = Base64.encode(stream.toByteArray(),Base64.DEFAULT)
+
                 ubiFormService.publishNotification(
                     sbn.notification.extras.getString(EXTRA_TITLE),
-                    sbn.notification.extras.getString(EXTRA_TEXT)
+                    sbn.notification.extras.getString(EXTRA_TEXT),
+                    byteArray
                 )
             }
-        }else{
-            Log.e("NOTIFICATION","Service not bounded")
+        } else {
+            Log.e("NOTIFICATION", "Service not bounded")
         }
     }
 
