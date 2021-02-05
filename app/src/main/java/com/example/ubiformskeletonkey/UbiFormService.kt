@@ -55,6 +55,7 @@ class UbiFormService : Service() {
     external fun deregisterFromAllHubs(activityObject: GeneralConnectedActivity)
     external fun closeRDH(activityObject: GeneralConnectedActivity)
     external fun openRDH(activityObject: GeneralConnectedActivity)
+    external fun gracefullyCloseRDH(newHubUrl : String, activityObject: GeneralConnectedActivity)
 
     external fun getComponentsFromRDH(
         rdhUrl: String,
@@ -72,12 +73,12 @@ class UbiFormService : Service() {
         activityObject: GeneralConnectedActivity
     ): Array<String>
 
+    external fun requestCloseSocketsOfID(correctComponentUrl: String, socketId: String, activityObject: GeneralConnectedActivity)
     external fun requestCloseSocketsOfType(
         url: String,
         endpointType: String,
         activityObject: GeneralConnectedActivity
     )
-
     external fun requestCreateRDH(url: String, activityObject: GeneralConnectedActivity)
     external fun requestCloseRDH(url: String, activityObject: GeneralConnectedActivity)
     external fun requestAddRDH(url: String, rdh: String, activityObject: GeneralConnectedActivity)
@@ -99,7 +100,7 @@ class UbiFormService : Service() {
     )
 
     external fun publishNotification(title: String?, extraTest: String?, iconImage : ByteArray?)
-    external fun requestCloseSocketsOfID(correctComponentUrl: String, socketId: String, activityObject: GeneralConnectedActivity)
+
 
 
     companion object {

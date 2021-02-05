@@ -411,3 +411,59 @@ Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *e
         }
     }
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_gracefullyCloseRDH(JNIEnv *env, jobject thiz, jstring new_rdh_url,
+                                                                      jobject activity_object) {
+    jboolean isCopy = false;
+    std::string newRdhUrl = env->GetStringUTFChars(new_rdh_url, &isCopy);
+
+    std::vector<std::shared_ptr<ComponentRepresentation>> connections;
+    try{
+        connections = component->getResourceDiscoveryHubConnections();
+    } catch (std::logic_error &e) {
+        writeToText("Resource Discovery Hub not open", env,  activity_object);
+        return;
+    }
+
+    std::vector<std::string> failed;
+    for(const auto& connection:connections){
+        bool removed = false;
+        bool added = false;
+        for(const auto& url:connection->getAllUrls()) {
+            try {
+                if(!removed) {
+                    component->getBackgroundRequester().requestRemoveRDH(
+                            url + ":" + std::to_string(connection->getPort()),
+                            component->getSelfAddress());
+                }
+                removed = true;
+            }catch(std::logic_error &e){
+                continue;
+            }
+            try{
+                if(!added) {
+                    component->getBackgroundRequester().requestAddRDH(
+                            url + ":" + std::to_string(connection->getPort()), newRdhUrl);
+                }
+                added = true;
+                break;
+            } catch(std::logic_error &e){
+                continue;
+            }
+        }
+        if(!added){failed.push_back(connection->getName());}
+    }
+
+    if(failed.empty()){writeToText("Successfully transferred all components", env, activity_object);}
+    else{
+        std::string returnMsg = "Failed to transfer: ";
+        for(const auto& name:failed){
+            returnMsg.append(name +", ");
+        }
+        writeToText(returnMsg, env,activity_object);
+    }
+
+    component->closeResourceDiscoveryHub();
+}
