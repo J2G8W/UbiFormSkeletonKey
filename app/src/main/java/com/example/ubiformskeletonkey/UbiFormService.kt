@@ -100,9 +100,11 @@ class UbiFormService : Service() {
         manifest: String,
         activityObject: GeneralConnectedActivity
     )
+    external fun requestCreateAndListen(componentUrl: String, endpointType: String, activityObject: GeneralConnectedActivity)
+
+    external fun requestCreateAndDial(componentUrl: String, endpointType: String, dialUrl: String, activityObject: GeneralConnectedActivity)
 
     external fun publishNotification(title: String?, extraTest: String?, iconImage : ByteArray?)
-
 
 
     companion object {

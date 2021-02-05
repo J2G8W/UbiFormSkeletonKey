@@ -415,6 +415,44 @@ Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *e
 
 extern "C"
 JNIEXPORT void JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestCreateAndListen(JNIEnv *env, jobject thiz,
+                                                                          jstring component_url,
+                                                                          jstring endpoint_type,
+                                                                          jobject activity_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(component_url, &isCopy);
+    std::string endpointType = env->GetStringUTFChars(endpoint_type, &isCopy);
+    try{
+        int port = component->getBackgroundRequester().requestToCreateAndListen(componentUrl,endpointType);
+        writeToText("Successfully started " + endpointType + " on port " + std::to_string(port),env, activity_object);
+    } catch (std::logic_error &e) {
+        writeToText(e.what(), env, activity_object);
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestCreateAndDial(JNIEnv *env, jobject thiz,
+                                                                        jstring component_url,
+                                                                        jstring endpoint_type,
+                                                                        jstring dial_url,
+                                                                        jobject activity_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(component_url, &isCopy);
+    std::string endpointType = env->GetStringUTFChars(endpoint_type, &isCopy);
+    std::string dialUrl = env->GetStringUTFChars(dial_url, &isCopy);
+    try{
+        std::vector<std::string> dialsUrls(1,dialUrl);
+        component->getBackgroundRequester().requestToCreateAndDial(componentUrl,endpointType, dialsUrls);
+        writeToText("Successfully started " + endpointType + " dialing " + dialUrl,env, activity_object);
+    } catch (std::logic_error &e) {
+        writeToText(e.what(), env, activity_object);
+    }
+}
+
+
+
+extern "C"
+JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_gracefullyCloseRDH(JNIEnv *env, jobject thiz, jstring new_rdh_url,
                                                                       jobject activity_object) {
     jboolean isCopy = false;

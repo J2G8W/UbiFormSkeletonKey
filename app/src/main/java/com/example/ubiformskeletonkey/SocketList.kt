@@ -130,7 +130,10 @@ class SocketList : GeneralConnectedActivity() {
                     longInput.text.toString(),
                     this
                 )
-                7,8,9,10 -> TODO()
+                7 -> ubiFormService.requestCreateAndListen(correctComponentUrl, shortInputOne.text.toString(), this)
+                8 -> ubiFormService.requestCreateAndDial(correctComponentUrl, shortInputOne.text.toString(),
+                shortInputTwo.text.toString(), this)
+                    9,10 -> TODO()
             }
             generateSocketList()
         }.start()

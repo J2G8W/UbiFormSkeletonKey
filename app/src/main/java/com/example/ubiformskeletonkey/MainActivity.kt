@@ -11,8 +11,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
 class MainActivity : GeneralConnectedActivity() {
+    var created : Boolean = false
     override fun connectedToUbiForm() {
-        updateRDHList()
+        if(created) {
+            updateRDHList()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +49,7 @@ class MainActivity : GeneralConnectedActivity() {
                 textInput.visibility = INVISIBLE
             }
         }
+        created = true
     }
 
     override fun onResume() {
