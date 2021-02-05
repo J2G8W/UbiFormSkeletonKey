@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.net.wifi.WifiManager
 import android.os.Binder
+import android.os.Build.MODEL
 import android.os.IBinder
 import android.util.Log
 
@@ -16,7 +17,7 @@ class UbiFormService : Service() {
         val ipAddress =
             "tcp://${(numAddress and 0xff)}.${(numAddress shr 8 and 0xff)}.${(numAddress shr 16 and 0xff)}.${(numAddress shr 24 and 0xff)}"
 
-        val componentMsg = startComponent(ipAddress)
+        val componentMsg = startComponent(ipAddress, MODEL)
         if (componentMsg.isNotEmpty()) {
             Log.e("Component Creation", componentMsg)
         }
@@ -24,6 +25,7 @@ class UbiFormService : Service() {
         if (rdhMsg.isNotEmpty()) {
             Log.e("RDH Creation", rdhMsg)
         }
+        Log.d("UbiFormService", "Service created successfully")
     }
 
     override fun onBind(intent: Intent): IBinder {
@@ -41,7 +43,7 @@ class UbiFormService : Service() {
         fun getService(): UbiFormService = this@UbiFormService
     }
 
-    external fun startComponent(ipAddress: String): String
+    external fun startComponent(ipAddress: String, name:String): String
     external fun startRDH(): String
 
     external fun getComponentAddress(): String

@@ -82,13 +82,14 @@ class MainActivity : GeneralConnectedActivity() {
             val choice = findViewById<Spinner>(R.id.component_action_choice)
             when (choice.selectedItemId) {
                 0L -> {
+                    ubiFormService.updateManifestWithHubs(this);
                     val builder = NotificationCompat.Builder(applicationContext, "TEST2")
                         .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle("My notification")
-                        .setContentText("Much longer text that cannot fit one line...")
+                        .setContentTitle("Manifest updated")
+                        .setContentText("Manifest was updated with all hosts")
                         .setStyle(
                             NotificationCompat.BigTextStyle()
-                                .bigText("Much longer text that cannot fit one line...")
+                                .bigText("Manifest was updated with all hosts")
                         )
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 

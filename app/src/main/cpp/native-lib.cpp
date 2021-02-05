@@ -18,14 +18,15 @@ void writeToText(const std::string &textToWrite, JNIEnv *env,
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_startComponent(JNIEnv *env, jobject thiz,
-                                                                  jstring ip_address) {
+                                                                  jstring ip_address, jstring name) {
     try {
-        // Starting is fine, but get error trying to start new thread
         // Reckon it is fixable
         if (component == nullptr) {
             jboolean isCopy = false;
             std::string componentUrl = env->GetStringUTFChars(ip_address, &isCopy);
+            std::string componentName = env->GetStringUTFChars(name, &isCopy);
             component = new Component(componentUrl);
+            component->getComponentManifest().setName(componentName);
 
             std::shared_ptr<EndpointSchema> notificationPublisherSchema = std::make_shared<EndpointSchema>();
             notificationPublisherSchema->addProperty("title", ValueType::String);
