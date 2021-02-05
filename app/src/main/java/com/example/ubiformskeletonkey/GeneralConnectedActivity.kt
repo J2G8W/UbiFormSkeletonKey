@@ -29,39 +29,26 @@ abstract class GeneralConnectedActivity : AppCompatActivity() {
         }
     }
 
-    protected val notificationPublisherConnection = object : ServiceConnection {
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            Log.d("NOTIFICATION", "Connected to Notification publisher")
-
-            // Create the NotificationChannel, but only on API 26+ because
-            // the NotificationChannel class is new and not in the support library
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name = getString(R.string.channel_name)
-                val descriptionText = "Lorem ipsum Julian is a legend"
-                val importance = NotificationManager.IMPORTANCE_DEFAULT
-                val channel = NotificationChannel("TEST2", name, importance).apply {
-                    description = descriptionText
-                }
-                // Register the channel with the system
-                val notificationManager: NotificationManager =
-                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
-                Log.d("NOTIFICATION", "Created channel")
-            }
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-        }
-    }
-
 
     override fun onStart() {
         super.onStart()
         Intent(this, UbiFormService::class.java).also { intent ->
             bindService(intent, ubiformServiceConnection, Context.BIND_AUTO_CREATE)
         }
-        Intent(this, NotificationPublisher::class.java).also { intent ->
-            bindService(intent, notificationPublisherConnection, Context.BIND_AUTO_CREATE)
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = "Lorem ipsum Julian is a legend"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("TEST2", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+            Log.d("NOTIFICATION", "Created channel")
         }
     }
 
@@ -69,7 +56,6 @@ abstract class GeneralConnectedActivity : AppCompatActivity() {
         super.onStop()
         ubiformServiceBound = false
         unbindService(ubiformServiceConnection)
-        unbindService(notificationPublisherConnection)
     }
 
     abstract fun connectedToUbiForm()

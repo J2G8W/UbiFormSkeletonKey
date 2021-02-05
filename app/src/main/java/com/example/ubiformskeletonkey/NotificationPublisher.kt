@@ -16,6 +16,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.toBitmap
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
 
 
 class NotificationPublisher : NotificationListenerService() {
@@ -35,32 +36,39 @@ class NotificationPublisher : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
+        Log.d("NOTICICATION", "Received")
 
         if (ubiformServiceBound) {
             if (sbn != null) {
                 var byteArray: ByteArray? = null
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    val remotePackageContext = applicationContext.createPackageContext(
+                    try{
+                        val remotePackageContext = applicationContext.createPackageContext(
                             sbn.notification.smallIcon.resPackage,0)
-
-                    val icon = sbn.notification.smallIcon.loadDrawable(remotePackageContext)
-                    if (icon != null) {
-                        val bitmap = icon.toBitmap(
-                            icon.intrinsicWidth,
-                            icon.intrinsicHeight,
-                            Bitmap.Config.ARGB_8888
-                        )
-                        val stream = ByteArrayOutputStream()
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                        byteArray = Base64.encode(stream.toByteArray(), Base64.NO_WRAP)
+                        val icon = sbn.notification.smallIcon.loadDrawable(remotePackageContext)
+                        if (icon != null) {
+                            val bitmap = icon.toBitmap(
+                                icon.intrinsicWidth,
+                                icon.intrinsicHeight,
+                                Bitmap.Config.ARGB_8888
+                            )
+                            val stream = ByteArrayOutputStream()
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                            byteArray = Base64.encode(stream.toByteArray(), Base64.NO_WRAP)
+                        }
+                    }catch (e : Exception){
+                        Log.e("NOTIFICATION",e.toString())
+                        // DO NOTHING SIMPLY GIVE NO ICON
                     }
                 }
 
+                /*
                 ubiFormService.publishNotification(
                     sbn.notification.extras.getString(EXTRA_TITLE),
                     sbn.notification.extras.getString(EXTRA_TEXT),
                     byteArray
-                )
+                )*/
+                ubiFormService.publishNotification("HELLO","EXTRA",null)
             }
         } else {
             Log.e("NOTIFICATION", "Service not bounded")

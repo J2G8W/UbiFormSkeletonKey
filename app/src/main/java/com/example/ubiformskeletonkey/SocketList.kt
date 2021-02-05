@@ -103,6 +103,8 @@ class SocketList : GeneralConnectedActivity() {
         val longInput = findViewById<EditText>(R.id.long_input)
         val choices = findViewById<Spinner>(R.id.socket_action_choice)
         val textInputOne = shortInputOne.text.toString()
+        val textInputTwo = shortInputTwo.text.toString()
+        val textLongInput = longInput.text.toString()
         Thread {
             when (choices.selectedItemPosition) {
                 0 -> updateMainOutput("No action taken")
@@ -117,27 +119,26 @@ class SocketList : GeneralConnectedActivity() {
                 3 -> ubiFormService.requestCreateRDH(correctComponentUrl, this)
                 4 -> ubiFormService.requestAddRDH(
                     correctComponentUrl,
-                    shortInputOne.text.toString(),
+                    textInputOne,
                     this
                 )
                 5 -> ubiFormService.requestRemoveRDH(
                     correctComponentUrl,
-                    shortInputOne.text.toString(),
+                    textInputOne,
                     this
                 )
                 6 -> ubiFormService.requestChangeComponentManifest(
                     correctComponentUrl,
-                    longInput.text.toString(),
+                    textLongInput,
                     this
                 )
-                7 -> ubiFormService.requestCreateAndListen(correctComponentUrl, shortInputOne.text.toString(), this)
-                8 -> ubiFormService.requestCreateAndDial(correctComponentUrl, shortInputOne.text.toString(),
-                shortInputTwo.text.toString(), this)
+                7 -> ubiFormService.requestCreateAndListen(correctComponentUrl, textInputOne, this)
+                8 -> ubiFormService.requestCreateAndDial(correctComponentUrl, textInputOne,
+                textInputTwo, this)
                     9,10 -> TODO()
             }
             generateSocketList()
         }.start()
-
         shortInputOne.text.clear()
         shortInputTwo.text.clear()
         longInput.text.clear()
