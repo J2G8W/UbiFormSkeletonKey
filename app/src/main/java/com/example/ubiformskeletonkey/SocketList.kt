@@ -13,6 +13,7 @@ class SocketList : GeneralConnectedActivity() {
     var correctComponentUrl: String = ""
 
     override fun connectedToUbiForm() {
+        updateMainOutput("Trying to connect")
         Thread {
             correctComponentUrl = ubiFormService.getCorrectRemoteAddress(rdhUrl, componentId, this)
             successfulConnection = correctComponentUrl.startsWith("tcp")

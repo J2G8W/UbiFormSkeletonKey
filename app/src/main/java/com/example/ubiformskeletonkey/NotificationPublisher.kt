@@ -62,13 +62,15 @@ class NotificationPublisher : NotificationListenerService() {
                     }
                 }
 
-                /*
+                Log.d("NOTIFICATION","IT3")
+
+
                 ubiFormService.publishNotification(
-                    sbn.notification.extras.getString(EXTRA_TITLE),
-                    sbn.notification.extras.getString(EXTRA_TEXT),
+                    sbn.notification.extras.getCharSequence(EXTRA_TITLE)?.toString(),
+                    sbn.notification.extras.getCharSequence(EXTRA_TEXT)?.toString(),
                     byteArray
-                )*/
-                ubiFormService.publishNotification("HELLO","EXTRA",null)
+                )
+                //ubiFormService.publishNotification("HELLO","EXTRA",null)
             }
         } else {
             Log.e("NOTIFICATION", "Service not bounded")
