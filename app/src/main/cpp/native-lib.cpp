@@ -196,6 +196,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
         int port = rep->getPort();
         for (const auto &url : rep->getAllUrls()) {
             try {
+                writeToText("Trying to connect on: " + url, env, activity_object);
                 component->getBackgroundRequester().requestLocationsOfRDH(
                         url + ":" + std::to_string(port));
                 correctUrl = url + ":" + std::to_string(port);
