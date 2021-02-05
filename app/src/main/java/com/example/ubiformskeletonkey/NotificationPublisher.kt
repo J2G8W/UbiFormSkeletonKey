@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.IBinder
@@ -13,10 +14,8 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Base64
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.toBitmap
 import java.io.ByteArrayOutputStream
-import java.lang.Exception
 
 
 class NotificationPublisher : NotificationListenerService() {
@@ -43,9 +42,12 @@ class NotificationPublisher : NotificationListenerService() {
                 var byteArray: ByteArray? = null
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     try{
-                        val remotePackageContext = applicationContext.createPackageContext(
-                            sbn.notification.smallIcon.resPackage,0)
+                        val remotePackageContext = this.createPackageContext(
+                            sbn.packageName,0)
+
                         val icon = sbn.notification.smallIcon.loadDrawable(remotePackageContext)
+
+
                         if (icon != null) {
                             val bitmap = icon.toBitmap(
                                 icon.intrinsicWidth,
@@ -56,13 +58,15 @@ class NotificationPublisher : NotificationListenerService() {
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
                             byteArray = Base64.encode(stream.toByteArray(), Base64.NO_WRAP)
                         }
-                    }catch (e : Exception){
-                        Log.e("NOTIFICATION",e.toString())
+
+
+                    }catch (e: Exception){
+                        Log.e("NOTIFICATION", e.toString())
                         // DO NOTHING SIMPLY GIVE NO ICON
                     }
                 }
 
-                Log.d("NOTIFICATION","IT3")
+                Log.d("NOTIFICATION", "IT5")
 
 
                 ubiFormService.publishNotification(
