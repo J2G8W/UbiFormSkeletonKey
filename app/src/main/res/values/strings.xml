@@ -23,8 +23,8 @@
     </string-array>
     <string-array name="socket_action_options">
         <item>No Action</item>
-        <item>Close sockets of ID</item>
-        <item>Close sockets of type</item>
+        <item>Close endpoint of ID</item>
+        <item>Close endpoints of type</item>
         <item>Request Create RDH</item>
         <item>Request Register with RDH</item>
         <item>Request De-register from RDH</item>
