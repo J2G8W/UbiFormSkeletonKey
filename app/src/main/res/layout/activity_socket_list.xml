@@ -21,8 +21,8 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="410dp"
-        android:layout_height="197dp"
+        android:layout_width="415dp"
+        android:layout_height="173dp"
         android:layout_marginTop="8dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
@@ -72,8 +72,8 @@
 
     <EditText
         android:id="@+id/short_input_one"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="359dp"
+        android:layout_height="49dp"
         android:layout_marginStart="19dp"
         android:layout_marginTop="26dp"
         android:ems="10"
@@ -84,8 +84,8 @@
 
     <EditText
         android:id="@+id/short_input_two"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="359dp"
+        android:layout_height="45dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:ems="10"
@@ -96,8 +96,8 @@
 
     <EditText
         android:id="@+id/long_input"
-        android:layout_width="369dp"
-        android:layout_height="194dp"
+        android:layout_width="371dp"
+        android:layout_height="184dp"
         android:layout_marginStart="19dp"
         android:layout_marginTop="20dp"
         android:ems="10"
@@ -108,16 +108,34 @@
         app:layout_constraintTop_toBottomOf="@+id/socket_action_choice" />
 
     <TextView
-        android:id="@+id/component_manifest"
-        android:layout_width="410dp"
-        android:layout_height="159dp"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text="@string/component_manifest_default"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/manifest_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/manifest_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+
+    <ScrollView
+        android:id="@+id/SCROLLER_ID"
+        android:layout_width="410dp"
+        android:layout_height="159dp"
+        android:layout_marginTop="14dp"
+        android:fillViewport="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/manifest_title">
+
+        <TextView
+            android:id="@+id/component_manifest"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/component_manifest_default" />
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
