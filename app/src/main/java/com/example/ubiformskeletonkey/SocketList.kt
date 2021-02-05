@@ -46,7 +46,7 @@ class SocketList : GeneralConnectedActivity() {
                 shortInputTwo.text.clear()
                 longInput.text.clear()
                 when (position) {
-                    1 -> shortInputOne.hint = "Socket ID"
+                    1 -> shortInputOne.hint = "Endpoint ID"
                     2 -> shortInputOne.hint = "Endpoint Type"
                     4 -> shortInputOne.hint = "RDH address"
                     5 -> shortInputOne.hint = "RDH address"
@@ -54,9 +54,18 @@ class SocketList : GeneralConnectedActivity() {
                         longInput.hint = "Manifest input"
                         longInput.setText(findViewById<TextView>(R.id.component_manifest).text.toString())
                     }
+                    7 -> shortInputOne.hint = "Endpoint Type"
+                    8 -> {
+                        shortInputOne.hint = "Endpoint Type"
+                        shortInputTwo.hint = "Dial URL"
+                    }
+                    9, 10 -> {
+                        shortInputOne.hint = "Requester Endpoint Type"
+                        shortInputTwo.hint = "Remote Endpoint Type"
+                    }
                 }
                 when (position) {
-                    1, 2, 4, 5 -> {
+                    1, 2, 4, 5, 7 -> {
                         shortInputOne.visibility = VISIBLE
                         shortInputTwo.visibility = INVISIBLE
                         longInput.visibility = INVISIBLE
@@ -65,6 +74,11 @@ class SocketList : GeneralConnectedActivity() {
                         shortInputOne.visibility = INVISIBLE
                         shortInputTwo.visibility = INVISIBLE
                         longInput.visibility = VISIBLE
+                    }
+                    8, 9, 10 -> {
+                        shortInputOne.visibility = VISIBLE
+                        shortInputTwo.visibility = VISIBLE
+                        longInput.visibility = INVISIBLE
                     }
                     else -> {
                         shortInputOne.visibility = INVISIBLE
@@ -93,7 +107,7 @@ class SocketList : GeneralConnectedActivity() {
             when (choices.selectedItemPosition) {
                 0 -> updateMainOutput("No action taken")
                 1 -> {
-                    TODO()
+                    ubiFormService.requestCloseSocketsOfID(correctComponentUrl, textInputOne, this)
                 }
                 2 -> ubiFormService.requestCloseSocketsOfType(
                     correctComponentUrl,
@@ -116,6 +130,7 @@ class SocketList : GeneralConnectedActivity() {
                     longInput.text.toString(),
                     this
                 )
+                7,8,9,10 -> TODO()
             }
             generateSocketList()
         }.start()

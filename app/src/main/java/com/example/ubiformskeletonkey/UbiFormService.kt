@@ -99,6 +99,7 @@ class UbiFormService : Service() {
     )
 
     external fun publishNotification(title: String?, extraTest: String?, iconImage : ByteArray?)
+    external fun requestCloseSocketsOfID(correctComponentUrl: String, socketId: String, activityObject: GeneralConnectedActivity)
 
 
     companion object {

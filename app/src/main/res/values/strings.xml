@@ -29,5 +29,9 @@
         <item>Request Register with RDH</item>
         <item>Request De-register from RDH</item>
         <item>Update Manifest</item>
+        <item>Request Create and Listen</item>
+        <item>Request Create and Dial</item>
+        <item>3rd Party Remote Listen Then Dial</item>
+        <item>3rd Party Listen Then Remote Dial</item>
     </string-array>
 </resources>

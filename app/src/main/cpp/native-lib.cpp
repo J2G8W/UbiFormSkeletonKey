@@ -359,6 +359,26 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestChangeComponentManifes
         writeToText(e.what(), env, activity_object);
     }
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseSocketsOfID(JNIEnv *env,
+                                                                           jobject thiz,
+                                                                           jstring correct_component_url,
+                                                                           jstring socket_id,
+                                                                           jobject activity_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(correct_component_url, &isCopy);
+    std::string endpointId = env->GetStringUTFChars(socket_id, &isCopy);
+    try{
+        component->getBackgroundRequester().requestCloseSocketOfId(componentUrl, endpointId);
+        writeToText("Successfully closed endpoint", env, activity_object);
+    } catch (std::logic_error &e) {
+        writeToText(e.what(), env, activity_object);
+    }
+}
+
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *env, jobject thiz,
