@@ -43,7 +43,7 @@ class UbiFormService : Service() {
         fun getService(): UbiFormService = this@UbiFormService
     }
 
-    external fun startComponent(ipAddress: String, name:String): String
+    external fun startComponent(ipAddress: String, name: String): String
     external fun startRDH(): String
 
     external fun getComponentAddress(): String
@@ -57,7 +57,7 @@ class UbiFormService : Service() {
     external fun deregisterFromAllHubs(activityObject: GeneralConnectedActivity)
     external fun closeRDH(activityObject: GeneralConnectedActivity)
     external fun openRDH(activityObject: GeneralConnectedActivity)
-    external fun gracefullyCloseRDH(newHubUrl : String, activityObject: GeneralConnectedActivity)
+    external fun gracefullyCloseRDH(newHubUrl: String, activityObject: GeneralConnectedActivity)
 
     external fun getComponentsFromRDH(
         rdhUrl: String,
@@ -75,12 +75,18 @@ class UbiFormService : Service() {
         activityObject: GeneralConnectedActivity
     ): Array<String>
 
-    external fun requestCloseSocketsOfID(correctComponentUrl: String, socketId: String, activityObject: GeneralConnectedActivity)
+    external fun requestCloseSocketsOfID(
+        correctComponentUrl: String,
+        socketId: String,
+        activityObject: GeneralConnectedActivity
+    )
+
     external fun requestCloseSocketsOfType(
         url: String,
         endpointType: String,
         activityObject: GeneralConnectedActivity
     )
+
     external fun requestCreateRDH(url: String, activityObject: GeneralConnectedActivity)
     external fun requestCloseRDH(url: String, activityObject: GeneralConnectedActivity)
     external fun requestAddRDH(url: String, rdh: String, activityObject: GeneralConnectedActivity)
@@ -100,11 +106,38 @@ class UbiFormService : Service() {
         manifest: String,
         activityObject: GeneralConnectedActivity
     )
-    external fun requestCreateAndListen(componentUrl: String, endpointType: String, activityObject: GeneralConnectedActivity)
 
-    external fun requestCreateAndDial(componentUrl: String, endpointType: String, dialUrl: String, activityObject: GeneralConnectedActivity)
+    external fun requestCreateAndListen(
+        componentUrl: String,
+        endpointType: String,
+        activityObject: GeneralConnectedActivity
+    )
 
-    external fun publishNotification(title: String?, extraTest: String?, iconImage : ByteArray?)
+    external fun requestCreateAndDial(
+        componentUrl: String,
+        endpointType: String,
+        dialUrl: String,
+        activityObject: GeneralConnectedActivity
+    )
+
+    external fun publishNotification(title: String?, extraTest: String?, iconImage: ByteArray?)
+
+    external fun request3rdPartyListenThenRemoteDial(
+        listenAddress: String,
+        listenEndpointType: String,
+        dialEndpointType: String,
+        dialerAddress: String,
+        activityObject: GeneralConnectedActivity
+    )
+
+    external fun request3rdPartyRemoteListenThenDial(
+        requesterAddress: String,
+        requesterEndpointType: String,
+        remoteEndpointType: String,
+        remoteAddress: String,
+        remotePort: Int,
+        activityObject: GeneralConnectedActivity
+    )
 
 
     companion object {

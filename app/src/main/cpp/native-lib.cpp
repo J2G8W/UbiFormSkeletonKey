@@ -19,7 +19,8 @@ void writeToText(const std::string &textToWrite, JNIEnv *env,
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_startComponent(JNIEnv *env, jobject thiz,
-                                                                  jstring ip_address, jstring name) {
+                                                                  jstring ip_address,
+                                                                  jstring name) {
     try {
         // Reckon it is fixable
         if (component == nullptr) {
@@ -198,14 +199,14 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
         auto selfAddress = component->getSelfAddress();
         auto selfSubnet = selfAddress.substr(0, selfAddress.rfind('.'));
         std::list<std::string> urls;
-        for (const auto& url: rep->getAllUrls()){
-            if (url.rfind(selfSubnet,0) ==0){
+        for (const auto &url: rep->getAllUrls()) {
+            if (url.rfind(selfSubnet, 0) == 0) {
                 urls.push_front(url);
-            }else{
+            } else {
                 urls.push_back(url);
             }
         }
-        for (const auto &url : urls ) {
+        for (const auto &url : urls) {
             try {
                 writeToText("Trying to connect on: " + url, env, activity_object);
                 component->getBackgroundRequester().requestLocationsOfRDH(
@@ -321,8 +322,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getSocketDescriptors(JNIEnv *
                                "\nSocket Type: " + socket->getString("socketType");
             if (socket->hasMember("listenPort")) {
                 text += "\nListening on port: " + std::to_string(socket->getInteger("listenPort"));
-            }
-            else if (socket->hasMember("dialUrl")) {
+            } else if (socket->hasMember("dialUrl")) {
                 text += "\nDialled: " + socket->getString("dialUrl");
             }
             env->SetObjectArrayElement(ret, i++, env->NewStringUTF(text.c_str()));
@@ -383,7 +383,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseSocketsOfID(JNIEn
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(correct_component_url, &isCopy);
     std::string endpointId = env->GetStringUTFChars(socket_id, &isCopy);
-    try{
+    try {
         component->getBackgroundRequester().requestCloseSocketOfId(componentUrl, endpointId);
         writeToText("Successfully closed endpoint", env, activity_object);
     } catch (std::logic_error &e) {
@@ -396,7 +396,8 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *env, jobject thiz,
                                                                        jstring title,
-                                                                       jstring extra_text, jbyteArray icon_image) {
+                                                                       jstring extra_text,
+                                                                       jbyteArray icon_image) {
     jboolean isCopy = false;
     std::string notificationTitle = (title == nullptr) ? "No Title" : env->GetStringUTFChars(title,
                                                                                              &isCopy);
@@ -410,11 +411,11 @@ Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *e
         SocketMessage sm;
         sm.addMember("title", notificationTitle);
         sm.addMember("extraText", extraText);
-        if(icon_image != nullptr) {
+        if (icon_image != nullptr) {
             jbyte *bufferPtr = env->GetByteArrayElements(icon_image, &isCopy);
             jsize lengthOfArray = env->GetArrayLength(icon_image);
             std::string iconText((char *) bufferPtr, lengthOfArray);
-            sm.addMember("icon",iconText);
+            sm.addMember("icon", iconText);
         }
         try {
             publisherEndpoint->sendMessage(sm);
@@ -434,9 +435,11 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestCreateAndListen(JNIEnv
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(component_url, &isCopy);
     std::string endpointType = env->GetStringUTFChars(endpoint_type, &isCopy);
-    try{
-        int port = component->getBackgroundRequester().requestToCreateAndListen(componentUrl,endpointType);
-        writeToText("Successfully started " + endpointType + " on port " + std::to_string(port),env, activity_object);
+    try {
+        int port = component->getBackgroundRequester().requestToCreateAndListen(componentUrl,
+                                                                                endpointType);
+        writeToText("Successfully started " + endpointType + " on port " + std::to_string(port),
+                    env, activity_object);
     } catch (std::logic_error &e) {
         writeToText(e.what(), env, activity_object);
     }
@@ -452,10 +455,12 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestCreateAndDial(JNIEnv *
     std::string componentUrl = env->GetStringUTFChars(component_url, &isCopy);
     std::string endpointType = env->GetStringUTFChars(endpoint_type, &isCopy);
     std::string dialUrl = env->GetStringUTFChars(dial_url, &isCopy);
-    try{
-        std::vector<std::string> dialsUrls(1,dialUrl);
-        component->getBackgroundRequester().requestToCreateAndDial(componentUrl,endpointType, dialsUrls);
-        writeToText("Successfully started " + endpointType + " dialing " + dialUrl,env, activity_object);
+    try {
+        std::vector<std::string> dialsUrls(1, dialUrl);
+        component->getBackgroundRequester().requestToCreateAndDial(componentUrl, endpointType,
+                                                                   dialsUrls);
+        writeToText("Successfully started " + endpointType + " dialing " + dialUrl, env,
+                    activity_object);
     } catch (std::logic_error &e) {
         writeToText(e.what(), env, activity_object);
     }
@@ -465,56 +470,111 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestCreateAndDial(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_ubiformskeletonkey_UbiFormService_gracefullyCloseRDH(JNIEnv *env, jobject thiz, jstring new_rdh_url,
+Java_com_example_ubiformskeletonkey_UbiFormService_gracefullyCloseRDH(JNIEnv *env, jobject thiz,
+                                                                      jstring new_rdh_url,
                                                                       jobject activity_object) {
     jboolean isCopy = false;
     std::string newRdhUrl = env->GetStringUTFChars(new_rdh_url, &isCopy);
 
     std::vector<std::shared_ptr<ComponentRepresentation>> connections;
-    try{
+    try {
         connections = component->getResourceDiscoveryHubConnections();
     } catch (std::logic_error &e) {
-        writeToText("Resource Discovery Hub not open", env,  activity_object);
+        writeToText("Resource Discovery Hub not open", env, activity_object);
         return;
     }
 
     std::vector<std::string> failed;
-    for(const auto& connection:connections){
+    for (const auto &connection:connections) {
         bool removed = false;
         bool added = false;
-        for(const auto& url:connection->getAllUrls()) {
+        for (const auto &url:connection->getAllUrls()) {
             try {
-                if(!removed) {
+                if (!removed) {
                     component->getBackgroundRequester().requestRemoveRDH(
                             url + ":" + std::to_string(connection->getPort()),
                             component->getSelfAddress());
                 }
                 removed = true;
-            }catch(std::logic_error &e){
+            } catch (std::logic_error &e) {
                 continue;
             }
-            try{
-                if(!added) {
+            try {
+                if (!added) {
                     component->getBackgroundRequester().requestAddRDH(
                             url + ":" + std::to_string(connection->getPort()), newRdhUrl);
                 }
                 added = true;
                 break;
-            } catch(std::logic_error &e){
+            } catch (std::logic_error &e) {
                 continue;
             }
         }
-        if(!added){failed.push_back(connection->getName());}
+        if (!added) { failed.push_back(connection->getName()); }
     }
 
-    if(failed.empty()){writeToText("Successfully transferred all components", env, activity_object);}
-    else{
+    if (failed.empty()) {
+        writeToText("Successfully transferred all components", env, activity_object);
+    }
+    else {
         std::string returnMsg = "Failed to transfer: ";
-        for(const auto& name:failed){
-            returnMsg.append(name +", ");
+        for (const auto &name:failed) {
+            returnMsg.append(name + ", ");
         }
-        writeToText(returnMsg, env,activity_object);
+        writeToText(returnMsg, env, activity_object);
     }
 
     component->closeResourceDiscoveryHub();
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_request3rdPartyListenThenRemoteDial(JNIEnv *env,
+                                                                                       jobject thiz,
+                                                                                       jstring listen_address,
+                                                                                       jstring listen_endpoint_type,
+                                                                                       jstring dial_endpoint_type,
+                                                                                       jstring dialer_address,
+                                                                                       jobject activity_object) {
+    jboolean isCopy = false;
+    std::string listenAddress = env->GetStringUTFChars(listen_address, &isCopy);
+    std::string listenEndpointType = env->GetStringUTFChars(listen_endpoint_type, &isCopy);
+    std::string dialEndpointType = env->GetStringUTFChars(dial_endpoint_type, &isCopy);
+    std::string dialAddress = env->GetStringUTFChars(dialer_address, &isCopy);
+
+    try {
+        component->getBackgroundRequester().request3rdPartyListenThenRemoteDial(listenAddress,
+                                                                                listenEndpointType,
+                                                                                dialEndpointType,
+                                                                                dialAddress);
+        writeToText("Success 3rd party request", env, activity_object);
+    } catch (std::logic_error &e) {
+        writeToText(e.what(), env, activity_object);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_request3rdPartyRemoteListenThenDial(JNIEnv *env,
+                                                                                       jobject thiz,
+                                                                                       jstring requester_address,
+                                                                                       jstring requester_endpoint_type,
+                                                                                       jstring remote_endpoint_type,
+                                                                                       jstring remote_address,
+                                                                                       jint remote_port,
+                                                                                       jobject activity_object) {
+    jboolean isCopy = false;
+    std::string requesterAddress = env->GetStringUTFChars(requester_address, &isCopy);
+    std::string requestEndpointType = env->GetStringUTFChars(requester_endpoint_type, &isCopy);
+    std::string remoteEndpointType = env->GetStringUTFChars(remote_endpoint_type, &isCopy);
+    std::string remoteAddress = env->GetStringUTFChars(remote_address, &isCopy);
+
+    try {
+        component->getBackgroundRequester().request3rdPartyRemoteListenThenDial(requesterAddress,
+                                                                                requestEndpointType,
+                                                                                remoteEndpointType,
+                                                                                remoteAddress,
+                                                                                (int) remote_port);
+        writeToText("Success 3rd party request", env, activity_object);
+    } catch (std::logic_error &e) {
+        writeToText(e.what(), env, activity_object);
+    }
 }

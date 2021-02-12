@@ -10,6 +10,7 @@
     <string name="component_manifest_default">Manifest Not Yet Loaded</string>
     <string name="channel_name">Test2</string>
     <string name="manifest_title">Component Manifest</string>
+    <string name="main_output_org">Get Started</string>
     <string-array name="component_action_options">
         <item>Update Manifest With Hubs</item>
         <item>Deregister from all hubs</item>

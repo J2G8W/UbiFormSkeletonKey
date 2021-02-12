@@ -5,6 +5,7 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.*
+import java.lang.NumberFormatException
 
 class SocketList : GeneralConnectedActivity() {
     var rdhUrl: String = ""
@@ -34,6 +35,8 @@ class SocketList : GeneralConnectedActivity() {
 
         val shortInputOne = findViewById<EditText>(R.id.short_input_one)
         val shortInputTwo = findViewById<EditText>(R.id.short_input_two)
+        val shortInputThree = findViewById<EditText>(R.id.short_input_three)
+        val shortInputFour = findViewById<EditText>(R.id.short_input_four)
         val longInput = findViewById<EditText>(R.id.long_input)
 
         optionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -63,27 +66,44 @@ class SocketList : GeneralConnectedActivity() {
                     9, 10 -> {
                         shortInputOne.hint = "Requester Endpoint Type"
                         shortInputTwo.hint = "Remote Endpoint Type"
+                        shortInputThree.hint = "Remote address"
+                        shortInputFour.hint = "Port"
                     }
                 }
                 when (position) {
                     1, 2, 4, 5, 7 -> {
                         shortInputOne.visibility = VISIBLE
                         shortInputTwo.visibility = INVISIBLE
+                        shortInputThree.visibility = INVISIBLE
+                        shortInputFour.visibility = INVISIBLE
                         longInput.visibility = INVISIBLE
                     }
                     6 -> {
                         shortInputOne.visibility = INVISIBLE
                         shortInputTwo.visibility = INVISIBLE
+                        shortInputThree.visibility = INVISIBLE
+                        shortInputFour.visibility = INVISIBLE
                         longInput.visibility = VISIBLE
                     }
-                    8, 9, 10 -> {
+                    8 -> {
                         shortInputOne.visibility = VISIBLE
                         shortInputTwo.visibility = VISIBLE
+                        shortInputThree.visibility = INVISIBLE
+                        shortInputFour.visibility = INVISIBLE
+                        longInput.visibility = INVISIBLE
+                    }
+                    9, 10 -> {
+                        shortInputOne.visibility = VISIBLE
+                        shortInputTwo.visibility = VISIBLE
+                        shortInputThree.visibility = VISIBLE
+                        shortInputFour.visibility = VISIBLE
                         longInput.visibility = INVISIBLE
                     }
                     else -> {
                         shortInputOne.visibility = INVISIBLE
                         shortInputTwo.visibility = INVISIBLE
+                        shortInputThree.visibility = INVISIBLE
+                        shortInputFour.visibility = INVISIBLE
                         longInput.visibility = INVISIBLE
                     }
                 }
@@ -92,6 +112,8 @@ class SocketList : GeneralConnectedActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 shortInputOne.visibility = INVISIBLE
                 shortInputTwo.visibility = INVISIBLE
+                shortInputThree.visibility = INVISIBLE
+                shortInputFour.visibility = INVISIBLE
                 longInput.visibility = INVISIBLE
             }
         }
@@ -101,10 +123,14 @@ class SocketList : GeneralConnectedActivity() {
         updateMainOutput("Completing action")
         val shortInputOne = findViewById<EditText>(R.id.short_input_one)
         val shortInputTwo = findViewById<EditText>(R.id.short_input_two)
+        val shortInputThree = findViewById<EditText>(R.id.short_input_three)
+        val shortInputFour = findViewById<EditText>(R.id.short_input_four)
         val longInput = findViewById<EditText>(R.id.long_input)
         val choices = findViewById<Spinner>(R.id.socket_action_choice)
         val textInputOne = shortInputOne.text.toString()
         val textInputTwo = shortInputTwo.text.toString()
+        val textInputThree = shortInputThree.text.toString()
+        val textInputFour = shortInputFour.text.toString()
         val textLongInput = longInput.text.toString()
         Thread {
             when (choices.selectedItemPosition) {
@@ -136,12 +162,30 @@ class SocketList : GeneralConnectedActivity() {
                 7 -> ubiFormService.requestCreateAndListen(correctComponentUrl, textInputOne, this)
                 8 -> ubiFormService.requestCreateAndDial(correctComponentUrl, textInputOne,
                 textInputTwo, this)
-                    9,10 -> TODO()
+                9 -> {
+                    try {
+                        val portNum = textInputFour.toInt()
+                        ubiFormService.request3rdPartyRemoteListenThenDial(
+                            correctComponentUrl,
+                            textInputOne,
+                            textInputTwo,
+                            textInputThree,
+                            portNum,
+                            this
+                        )
+                    }catch (e : NumberFormatException){
+                        updateMainOutput("Port given was not a number")
+                    }
+                }
+                10 -> ubiFormService.request3rdPartyListenThenRemoteDial(correctComponentUrl, textInputOne, textInputTwo,
+                "$textInputThree:$textInputFour", this)
             }
             generateSocketList()
         }.start()
         shortInputOne.text.clear()
         shortInputTwo.text.clear()
+        shortInputThree.text.clear()
+        shortInputFour.text.clear()
         longInput.text.clear()
         choices.setSelection(0)
     }
