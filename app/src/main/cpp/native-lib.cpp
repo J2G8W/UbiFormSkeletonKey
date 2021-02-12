@@ -515,8 +515,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_gracefullyCloseRDH(JNIEnv *en
 
     if (failed.empty()) {
         writeToText("Successfully transferred all components", env, activity_object);
-    }
-    else {
+    } else {
         std::string returnMsg = "Failed to transfer: ";
         for (const auto &name:failed) {
             returnMsg.append(name + ", ");

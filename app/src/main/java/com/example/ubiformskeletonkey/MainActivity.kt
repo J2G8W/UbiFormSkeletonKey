@@ -11,9 +11,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
 class MainActivity : GeneralConnectedActivity() {
-    var created : Boolean = false
+    var created: Boolean = false
     override fun connectedToUbiForm() {
-        if(created) {
+        if (created) {
             updateRDHList()
         }
     }
@@ -35,7 +35,7 @@ class MainActivity : GeneralConnectedActivity() {
                         textInput.visibility = VISIBLE
                         textInput.hint = "New Resource Discoveyr Hub"
                     }
-                    7 ->{
+                    7 -> {
                         textInput.visibility = VISIBLE
                         textInput.hint = "New Resource Discovery Address"
                     }
@@ -86,7 +86,7 @@ class MainActivity : GeneralConnectedActivity() {
             val choice = findViewById<Spinner>(R.id.component_action_choice)
             when (choice.selectedItemId) {
                 0L -> {
-                    ubiFormService.updateManifestWithHubs(this);
+                    ubiFormService.updateManifestWithHubs(this)
                     val builder = NotificationCompat.Builder(applicationContext, "TEST2")
                         .setSmallIcon(R.drawable.ic_launcher_background)
                         .setContentTitle("Manifest updated")
@@ -107,7 +107,7 @@ class MainActivity : GeneralConnectedActivity() {
                 4L -> updateMainOutput("Component address: " + ubiFormService.getComponentAddress())
                 5L -> updateMainOutput("Resource Discovery Hub Address: " + ubiFormService.getRdhAddress())
                 6L -> ubiFormService.addRDH(textInput.text.toString(), this)
-                7L -> ubiFormService.gracefullyCloseRDH(textInput.text.toString(),this)
+                7L -> ubiFormService.gracefullyCloseRDH(textInput.text.toString(), this)
                 else -> {
                     updateMainOutput("Not a valid action")
                 }

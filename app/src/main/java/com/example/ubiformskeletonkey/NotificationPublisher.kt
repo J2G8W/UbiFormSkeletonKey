@@ -6,7 +6,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.IBinder
@@ -40,10 +39,11 @@ class NotificationPublisher : NotificationListenerService() {
         if (ubiformServiceBound) {
             if (sbn != null) {
                 var byteArray: ByteArray? = null
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    try{
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    try {
                         val remotePackageContext = this.createPackageContext(
-                            sbn.packageName,0)
+                            sbn.packageName, 0
+                        )
 
                         val icon = sbn.notification.smallIcon.loadDrawable(remotePackageContext)
 
@@ -60,7 +60,7 @@ class NotificationPublisher : NotificationListenerService() {
                         }
 
 
-                    }catch (e: Exception){
+                    } catch (e: Exception) {
                         Log.e("NOTIFICATION", e.toString())
                         // DO NOTHING SIMPLY GIVE NO ICON
                     }

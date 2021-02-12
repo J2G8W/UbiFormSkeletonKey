@@ -5,7 +5,6 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.*
-import java.lang.NumberFormatException
 
 class SocketList : GeneralConnectedActivity() {
     var rdhUrl: String = ""
@@ -160,8 +159,10 @@ class SocketList : GeneralConnectedActivity() {
                     this
                 )
                 7 -> ubiFormService.requestCreateAndListen(correctComponentUrl, textInputOne, this)
-                8 -> ubiFormService.requestCreateAndDial(correctComponentUrl, textInputOne,
-                textInputTwo, this)
+                8 -> ubiFormService.requestCreateAndDial(
+                    correctComponentUrl, textInputOne,
+                    textInputTwo, this
+                )
                 9 -> {
                     try {
                         val portNum = textInputFour.toInt()
@@ -173,12 +174,14 @@ class SocketList : GeneralConnectedActivity() {
                             portNum,
                             this
                         )
-                    }catch (e : NumberFormatException){
+                    } catch (e: NumberFormatException) {
                         updateMainOutput("Port given was not a number")
                     }
                 }
-                10 -> ubiFormService.request3rdPartyListenThenRemoteDial(correctComponentUrl, textInputOne, textInputTwo,
-                "$textInputThree:$textInputFour", this)
+                10 -> ubiFormService.request3rdPartyListenThenRemoteDial(
+                    correctComponentUrl, textInputOne, textInputTwo,
+                    "$textInputThree:$textInputFour", this
+                )
             }
             generateSocketList()
         }.start()
