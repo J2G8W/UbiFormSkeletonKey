@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <string>
 #include <UbiForm/Component.h>
+#include <list>
 
 Component *component = nullptr;
 
@@ -194,7 +195,17 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
         std::string correctUrl;
         bool found = false;
         int port = rep->getPort();
-        for (const auto &url : rep->getAllUrls()) {
+        auto selfAddress = component->getSelfAddress();
+        auto selfSubnet = selfAddress.substr(0, selfAddress.rfind('.'));
+        std::list<std::string> urls;
+        for (const auto& url: rep->getAllUrls()){
+            if (url.rfind(selfSubnet,0) ==0){
+                urls.push_front(url);
+            }else{
+                urls.push_back(url);
+            }
+        }
+        for (const auto &url : urls ) {
             try {
                 writeToText("Trying to connect on: " + url, env, activity_object);
                 component->getBackgroundRequester().requestLocationsOfRDH(
