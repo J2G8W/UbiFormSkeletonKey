@@ -120,7 +120,12 @@ class UbiFormService : Service() {
         activityObject: GeneralConnectedActivity
     )
 
-    external fun publishNotification(title: String?, extraTest: String?, iconImage: ByteArray?)
+    external fun publishNotification(
+        appName: String,
+        messageTitle: String,
+        messageText: String,
+        iconImage: ByteArray?
+    )
 
     external fun request3rdPartyListenThenRemoteDial(
         listenAddress: String,

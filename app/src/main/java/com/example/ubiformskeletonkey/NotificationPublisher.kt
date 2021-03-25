@@ -6,15 +6,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.Bitmap
-import android.os.Build
 import android.os.IBinder
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import android.util.Base64
 import android.util.Log
-import androidx.core.graphics.drawable.toBitmap
-import java.io.ByteArrayOutputStream
 
 
 class NotificationPublisher : NotificationListenerService() {
@@ -38,6 +33,7 @@ class NotificationPublisher : NotificationListenerService() {
 
         if (ubiformServiceBound) {
             if (sbn != null) {
+                /*
                 var byteArray: ByteArray? = null
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     try {
@@ -45,8 +41,8 @@ class NotificationPublisher : NotificationListenerService() {
                             sbn.packageName, 0
                         )
 
-                        val icon = sbn.notification.smallIcon.loadDrawable(remotePackageContext)
 
+                        val icon = sbn.notification.smallIcon.loadDrawable(remotePackageContext)
 
                         if (icon != null) {
                             val bitmap = icon.toBitmap(
@@ -59,21 +55,23 @@ class NotificationPublisher : NotificationListenerService() {
                             byteArray = Base64.encode(stream.toByteArray(), Base64.NO_WRAP)
                         }
 
-
                     } catch (e: Exception) {
                         Log.e("NOTIFICATION", e.toString())
                         // DO NOTHING SIMPLY GIVE NO ICON
                     }
-                }
+                }*/
 
                 Log.d("NOTIFICATION", "IT5")
 
-
+                val title = sbn.notification.extras.getCharSequence(EXTRA_TITLE)?.toString() ?: "No Title"
+                val text = sbn.notification.extras.getCharSequence(EXTRA_TEXT)?.toString() ?: "No Text"
                 ubiFormService.publishNotification(
-                    sbn.notification.extras.getCharSequence(EXTRA_TITLE)?.toString(),
-                    sbn.notification.extras.getCharSequence(EXTRA_TEXT)?.toString(),
-                    byteArray
+                    sbn.packageName,
+                    title,
+                    text,
+                    null
                 )
+
                 //ubiFormService.publishNotification("HELLO","EXTRA",null)
             }
         } else {

@@ -31,10 +31,21 @@ Java_com_example_ubiformskeletonkey_UbiFormService_startComponent(JNIEnv *env, j
             component->getComponentManifest().setName(componentName);
 
             std::shared_ptr<EndpointSchema> notificationPublisherSchema = std::make_shared<EndpointSchema>();
-            notificationPublisherSchema->addProperty("title", ValueType::String);
-            notificationPublisherSchema->addRequired("title");
-            notificationPublisherSchema->addProperty("extraText", ValueType::String);
-            notificationPublisherSchema->addRequired("extraText");
+            notificationPublisherSchema->addProperty("appName", ValueType::String);
+            notificationPublisherSchema->addRequired("appName");
+            notificationPublisherSchema->addProperty("messageText", ValueType::String);
+            notificationPublisherSchema->addRequired("messageText");
+            notificationPublisherSchema->addProperty("messageTitle", ValueType::String);
+            notificationPublisherSchema->addRequired("messageTitle");
+            notificationPublisherSchema->addProperty("phoneName", ValueType::String);
+            notificationPublisherSchema->addProperty("time", ValueType::String);
+
+            EndpointSchema colourSchema;
+            colourSchema.addProperty("r",ValueType::Number);
+            colourSchema.addProperty("g",ValueType::Number);
+            colourSchema.addProperty("b",ValueType::Number);
+            notificationPublisherSchema->setSubObject("colour",colourSchema);
+
             component->getComponentManifest().addEndpoint(ConnectionParadigm::Publisher,
                                                           "notificationPublisher",
                                                           nullptr, notificationPublisherSchema);
@@ -395,28 +406,30 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseEndpointsOfID(JNI
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *env, jobject thiz,
-                                                                       jstring title,
-                                                                       jstring extra_text,
-                                                                       jbyteArray icon_image) {
+                                                                       jstring app_name,
+                                                                       jstring message_title,
+                                                                        jstring message_text,
+                                                                        jbyteArray icon_image) {
     jboolean isCopy = false;
-    std::string notificationTitle = (title == nullptr) ? "No Title" : env->GetStringUTFChars(title,
-                                                                                             &isCopy);
-    std::string extraText = (extra_text == nullptr) ? "No Extra Text" : env->GetStringUTFChars(
-            extra_text, &isCopy);
+    std::string appName = env->GetStringUTFChars(app_name,  &isCopy);
+    std::string notificationTitle = env->GetStringUTFChars(message_title,    &isCopy);
+    std::string extraText = env->GetStringUTFChars(message_text, &isCopy);
 
 
     auto endpoints = component->getEndpointsByType("notificationPublisher");
     if (!endpoints->empty()) {
         auto publisherEndpoint = component->castToDataSenderEndpoint(endpoints->at(0));
         EndpointMessage endpointMessage;
-        endpointMessage.addMember("title", notificationTitle);
-        endpointMessage.addMember("extraText", extraText);
-        if (icon_image != nullptr) {
-            jbyte *bufferPtr = env->GetByteArrayElements(icon_image, &isCopy);
-            jsize lengthOfArray = env->GetArrayLength(icon_image);
-            std::string iconText((char *) bufferPtr, lengthOfArray);
-            endpointMessage.addMember("icon", iconText);
-        }
+        endpointMessage.addMember("appName", appName);
+        endpointMessage.addMember("messageTitle", notificationTitle);
+        endpointMessage.addMember("messageText", extraText);
+        endpointMessage.addMember("phoneName",component->getComponentManifest().getName());
+
+        std::unique_ptr<EndpointMessage> colour = std::make_unique<EndpointMessage>();
+        colour->addMember("r",255);
+        colour->addMember("g",0);
+        colour->addMember("b",0);
+        endpointMessage.addMoveObject("colour", std::move(colour));
         try {
             publisherEndpoint->sendMessage(endpointMessage);
             //writeToText("Success sending message " + sm.stringify(), env, activity_object);
