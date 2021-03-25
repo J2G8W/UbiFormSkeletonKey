@@ -33,7 +33,7 @@ class ComponentList : GeneralConnectedActivity() {
                             ActionBar.LayoutParams.WRAP_CONTENT
                         )
                         component.setOnClickListener {
-                            val intent = Intent(it.context, SocketList::class.java)
+                            val intent = Intent(it.context, EndpointList::class.java)
                                 .apply {
                                     putExtra("rdh", rdhUrl)
                                     putExtra("id", componentId)

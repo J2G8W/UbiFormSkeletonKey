@@ -6,7 +6,7 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.*
 
-class SocketList : GeneralConnectedActivity() {
+class EndpointList : GeneralConnectedActivity() {
     var rdhUrl: String = ""
     var componentId: String = ""
     var successfulConnection: Boolean = false
@@ -20,14 +20,14 @@ class SocketList : GeneralConnectedActivity() {
 
             if (successfulConnection) {
                 updateMainOutput("Connected to ${correctComponentUrl}")
-                generateSocketList()
+                generateEndpointList()
             }
         }.start()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_socket_list)
+        setContentView(R.layout.activity_endpoint_list)
         rdhUrl = intent.getStringExtra("rdh").toString()
         componentId = intent.getStringExtra("id").toString()
         val optionSpinner = findViewById<Spinner>(R.id.socket_action_choice)
@@ -118,7 +118,7 @@ class SocketList : GeneralConnectedActivity() {
         }
     }
 
-    fun socketAction(view: View) {
+    fun endpointAction(view: View) {
         updateMainOutput("Completing action")
         val shortInputOne = findViewById<EditText>(R.id.short_input_one)
         val shortInputTwo = findViewById<EditText>(R.id.short_input_two)
@@ -135,9 +135,9 @@ class SocketList : GeneralConnectedActivity() {
             when (choices.selectedItemPosition) {
                 0 -> updateMainOutput("No action taken")
                 1 -> {
-                    ubiFormService.requestCloseSocketsOfID(correctComponentUrl, textInputOne, this)
+                    ubiFormService.requestCloseEndpointsOfID(correctComponentUrl, textInputOne, this)
                 }
-                2 -> ubiFormService.requestCloseSocketsOfType(
+                2 -> ubiFormService.requestCloseEndpointsOfType(
                     correctComponentUrl,
                     textInputOne,
                     this
@@ -183,7 +183,7 @@ class SocketList : GeneralConnectedActivity() {
                     "$textInputThree:$textInputFour", this
                 )
             }
-            generateSocketList()
+            generateEndpointList()
         }.start()
         shortInputOne.text.clear()
         shortInputTwo.text.clear()
@@ -193,7 +193,7 @@ class SocketList : GeneralConnectedActivity() {
         choices.setSelection(0)
     }
 
-    fun generateSocketList() {
+    fun generateEndpointList() {
         if (ubiformServiceBound) {
             val manifest: String =
                 ubiFormService.requestComponentManifest(correctComponentUrl, this)
@@ -203,11 +203,11 @@ class SocketList : GeneralConnectedActivity() {
             val listContainer = findViewById<LinearLayout>(R.id.socket_container)
 
             listContainer.post { listContainer.removeAllViews() }
-            val values = ubiFormService.getSocketDescriptors(correctComponentUrl, this)
+            val values = ubiFormService.getEndpointDescriptors(correctComponentUrl, this)
             if (values.isEmpty()) return
-            for (socket in values) {
+            for (endpoint in values) {
                 val entry = TextView(this)
-                entry.text = socket
+                entry.text = endpoint
                 listContainer.post { listContainer.addView(entry) }
             }
         }

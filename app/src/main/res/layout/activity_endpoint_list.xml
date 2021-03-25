@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SocketList">
+    tools:context=".EndpointList">
 
     <TextView
         android:id="@+id/main_output"
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/socket_title"
+        android:text="@string/endpoint_title"
         app:layout_constraintStart_toStartOf="@+id/scrollView2"
         app:layout_constraintTop_toBottomOf="@+id/long_input" />
 
@@ -53,7 +53,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
-        android:entries="@array/socket_action_options"
+        android:entries="@array/endpoint_action_options"
         android:prompt="@string/choose_action"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_output" />
@@ -63,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="22dp"
-        android:onClick="socketAction"
+        android:onClick="endpointAction"
         android:text="@string/go"
         app:layout_constraintBottom_toBottomOf="@+id/socket_action_choice"
         app:layout_constraintEnd_toEndOf="parent"

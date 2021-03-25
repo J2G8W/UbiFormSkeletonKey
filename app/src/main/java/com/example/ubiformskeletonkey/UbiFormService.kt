@@ -70,18 +70,18 @@ class UbiFormService : Service() {
         activityObject: GeneralConnectedActivity
     ): String
 
-    external fun getSocketDescriptors(
+    external fun getEndpointDescriptors(
         url: String,
         activityObject: GeneralConnectedActivity
     ): Array<String>
 
-    external fun requestCloseSocketsOfID(
+    external fun requestCloseEndpointsOfID(
         correctComponentUrl: String,
-        socketId: String,
+        endpointId: String,
         activityObject: GeneralConnectedActivity
     )
 
-    external fun requestCloseSocketsOfType(
+    external fun requestCloseEndpointsOfType(
         url: String,
         endpointType: String,
         activityObject: GeneralConnectedActivity

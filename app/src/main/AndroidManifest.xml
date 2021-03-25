@@ -24,7 +24,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".SocketList" />
+        <activity android:name=".EndpointList" />
         <activity android:name=".ComponentList" />
 
         <service

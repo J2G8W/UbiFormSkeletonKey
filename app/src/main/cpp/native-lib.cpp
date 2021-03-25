@@ -35,7 +35,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_startComponent(JNIEnv *env, j
             notificationPublisherSchema->addRequired("title");
             notificationPublisherSchema->addProperty("extraText", ValueType::String);
             notificationPublisherSchema->addRequired("extraText");
-            component->getComponentManifest().addEndpoint(SocketType::Publisher,
+            component->getComponentManifest().addEndpoint(ConnectionParadigm::Publisher,
                                                           "notificationPublisher",
                                                           nullptr, notificationPublisherSchema);
 
@@ -230,17 +230,17 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseSocketsOfType(JNIEnv *env,
-                                                                             jobject thiz,
-                                                                             jstring url,
-                                                                             jstring endpoint_type,
-                                                                             jobject activity_object) {
+Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseEndpointsOfType(JNIEnv *env,
+                                                                               jobject thiz,
+                                                                               jstring url,
+                                                                               jstring endpoint_type,
+                                                                               jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     std::string endpointType = env->GetStringUTFChars(endpoint_type, &isCopy);
     try {
-        component->getBackgroundRequester().requestCloseSocketOfType(componentUrl, endpointType);
-        writeToText("Successfully closed sockets", env, activity_object);
+        component->getBackgroundRequester().requestCloseEndpointsOfType(componentUrl, endpointType);
+        writeToText("Successfully closed endpoints", env, activity_object);
     } catch (std::logic_error &e) {
         writeToText(e.what(), env, activity_object);
     }
@@ -305,25 +305,25 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestRemoveRDH(JNIEnv *env,
 }
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_com_example_ubiformskeletonkey_UbiFormService_getSocketDescriptors(JNIEnv *env, jobject thiz,
-                                                                        jstring url,
-                                                                        jobject activity_object) {
+Java_com_example_ubiformskeletonkey_UbiFormService_getEndpointDescriptors(JNIEnv *env, jobject thiz,
+                                                                          jstring url,
+                                                                          jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(url, &isCopy);
     try {
-        auto sockets = component->getBackgroundRequester().requestEndpointInfo(componentUrl);
-        jobjectArray ret = env->NewObjectArray(sockets.size(),
+        auto endpoints = component->getBackgroundRequester().requestEndpointInfo(componentUrl);
+        jobjectArray ret = env->NewObjectArray(endpoints.size(),
                                                env->FindClass("java/lang/String"),
                                                env->NewStringUTF(""));
         int i = 0;
-        for (const auto &socket : sockets) {
-            std::string text = "ID: " + socket->getString("id") + "\nEndpoint Type: " +
-                               socket->getString("endpointType") +
-                               "\nSocket Type: " + socket->getString("socketType");
-            if (socket->hasMember("listenPort")) {
-                text += "\nListening on port: " + std::to_string(socket->getInteger("listenPort"));
-            } else if (socket->hasMember("dialUrl")) {
-                text += "\nDialled: " + socket->getString("dialUrl");
+        for (const auto &endpoint : endpoints) {
+            std::string text = "ID: " + endpoint->getString("id") + "\nEndpoint Type: " +
+                               endpoint->getString("endpointType") +
+                               "\nCommunications Paradigm: " + endpoint->getString("connectionParadigm");
+            if (endpoint->hasMember("listenPort")) {
+                text += "\nListening on port: " + std::to_string(endpoint->getInteger("listenPort"));
+            } else if (endpoint->hasMember("dialUrl")) {
+                text += "\nDialled: " + endpoint->getString("dialUrl");
             }
             env->SetObjectArrayElement(ret, i++, env->NewStringUTF(text.c_str()));
         }
@@ -375,16 +375,16 @@ Java_com_example_ubiformskeletonkey_UbiFormService_requestChangeComponentManifes
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseSocketsOfID(JNIEnv *env,
-                                                                           jobject thiz,
-                                                                           jstring correct_component_url,
-                                                                           jstring socket_id,
-                                                                           jobject activity_object) {
+Java_com_example_ubiformskeletonkey_UbiFormService_requestCloseEndpointsOfID(JNIEnv *env,
+                                                                             jobject thiz,
+                                                                             jstring correct_component_url,
+                                                                             jstring endpoint_id,
+                                                                             jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(correct_component_url, &isCopy);
-    std::string endpointId = env->GetStringUTFChars(socket_id, &isCopy);
+    std::string endpointId = env->GetStringUTFChars(endpoint_id, &isCopy);
     try {
-        component->getBackgroundRequester().requestCloseSocketOfId(componentUrl, endpointId);
+        component->getBackgroundRequester().requestCloseEndpointOfId(componentUrl, endpointId);
         writeToText("Successfully closed endpoint", env, activity_object);
     } catch (std::logic_error &e) {
         writeToText(e.what(), env, activity_object);
@@ -408,17 +408,17 @@ Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *e
     auto endpoints = component->getEndpointsByType("notificationPublisher");
     if (!endpoints->empty()) {
         auto publisherEndpoint = component->castToDataSenderEndpoint(endpoints->at(0));
-        SocketMessage sm;
-        sm.addMember("title", notificationTitle);
-        sm.addMember("extraText", extraText);
+        EndpointMessage endpointMessage;
+        endpointMessage.addMember("title", notificationTitle);
+        endpointMessage.addMember("extraText", extraText);
         if (icon_image != nullptr) {
             jbyte *bufferPtr = env->GetByteArrayElements(icon_image, &isCopy);
             jsize lengthOfArray = env->GetArrayLength(icon_image);
             std::string iconText((char *) bufferPtr, lengthOfArray);
-            sm.addMember("icon", iconText);
+            endpointMessage.addMember("icon", iconText);
         }
         try {
-            publisherEndpoint->sendMessage(sm);
+            publisherEndpoint->sendMessage(endpointMessage);
             //writeToText("Success sending message " + sm.stringify(), env, activity_object);
         } catch (std::logic_error &e) {
             //writeToText(e.what(),env, activity_object);
