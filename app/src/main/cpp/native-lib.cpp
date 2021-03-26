@@ -43,10 +43,10 @@ Java_com_example_ubiformskeletonkey_UbiFormService_startComponent(JNIEnv *env, j
             notificationPublisherSchema->addProperty("time", ValueType::String);
 
             EndpointSchema colourSchema;
-            colourSchema.addProperty("r",ValueType::Number);
-            colourSchema.addProperty("g",ValueType::Number);
-            colourSchema.addProperty("b",ValueType::Number);
-            notificationPublisherSchema->setSubObject("colour",colourSchema);
+            colourSchema.addProperty("r", ValueType::Number);
+            colourSchema.addProperty("g", ValueType::Number);
+            colourSchema.addProperty("b", ValueType::Number);
+            notificationPublisherSchema->setSubObject("colour", colourSchema);
 
             component->getComponentManifest().addEndpoint(ConnectionParadigm::Publisher,
                                                           "notificationPublisher",
@@ -195,7 +195,8 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getComponentsFromRDH(JNIEnv *
     }
 }
 
-std::list<std::string> getOrderedUrls(const std::string& selfAddress, ComponentRepresentation& rep){
+std::list<std::string>
+getOrderedUrls(const std::string &selfAddress, ComponentRepresentation &rep) {
     auto selfSubnet = selfAddress.substr(0, selfAddress.rfind('.'));
     std::list<std::string> urls;
     for (const auto &url: rep.getAllUrls()) {
@@ -226,7 +227,7 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
         bool found = false;
         int port = rep->getPort();
         auto selfAddress = component->getSelfAddress();
-        std::list<std::string> urls = getOrderedUrls(selfAddress,*rep);
+        std::list<std::string> urls = getOrderedUrls(selfAddress, *rep);
 
         for (const auto &url : urls) {
             try {
@@ -341,9 +342,11 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getEndpointDescriptors(JNIEnv
         for (const auto &endpoint : endpoints) {
             std::string text = "ID: " + endpoint->getString("id") + "\nEndpoint Type: " +
                                endpoint->getString("endpointType") +
-                               "\nCommunications Paradigm: " + endpoint->getString("connectionParadigm");
+                               "\nCommunications Paradigm: " +
+                               endpoint->getString("connectionParadigm");
             if (endpoint->hasMember("listenPort")) {
-                text += "\nListening on port: " + std::to_string(endpoint->getInteger("listenPort"));
+                text += "\nListening on port: " +
+                        std::to_string(endpoint->getInteger("listenPort"));
             } else if (endpoint->hasMember("dialUrl")) {
                 text += "\nDialled: " + endpoint->getString("dialUrl");
             }
@@ -419,11 +422,11 @@ JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *env, jobject thiz,
                                                                        jstring app_name,
                                                                        jstring message_title,
-                                                                        jstring message_text,
-                                                                        jbyteArray icon_image) {
+                                                                       jstring message_text,
+                                                                       jbyteArray icon_image) {
     jboolean isCopy = false;
-    std::string appName = env->GetStringUTFChars(app_name,  &isCopy);
-    std::string notificationTitle = env->GetStringUTFChars(message_title,    &isCopy);
+    std::string appName = env->GetStringUTFChars(app_name, &isCopy);
+    std::string notificationTitle = env->GetStringUTFChars(message_title, &isCopy);
     std::string extraText = env->GetStringUTFChars(message_text, &isCopy);
 
 
@@ -434,12 +437,12 @@ Java_com_example_ubiformskeletonkey_UbiFormService_publishNotification(JNIEnv *e
         endpointMessage.addMember("appName", appName);
         endpointMessage.addMember("messageTitle", notificationTitle);
         endpointMessage.addMember("messageText", extraText);
-        endpointMessage.addMember("phoneName",component->getComponentManifest().getName());
+        endpointMessage.addMember("phoneName", component->getComponentManifest().getName());
 
         std::unique_ptr<EndpointMessage> colour = std::make_unique<EndpointMessage>();
-        colour->addMember("r",255);
-        colour->addMember("g",0);
-        colour->addMember("b",0);
+        colour->addMember("r", 255);
+        colour->addMember("g", 0);
+        colour->addMember("b", 0);
         endpointMessage.addMoveObject("colour", std::move(colour));
         try {
             publisherEndpoint->sendMessage(endpointMessage);
@@ -516,15 +519,16 @@ Java_com_example_ubiformskeletonkey_UbiFormService_gracefullyCloseRDH(JNIEnv *en
         return;
     }
 
-    std::string rdhAddress = newRdhUrl.substr(0, newRdhUrl.rfind(':')) + ":" +  std::to_string(port);
+    std::string rdhAddress = newRdhUrl.substr(0, newRdhUrl.rfind(':')) + ":" + std::to_string(port);
 
-    std::string oldRdh = component->getSelfAddress() + ":" + std::to_string(component->getResourceDiscoveryHubPort());
+    std::string oldRdh = component->getSelfAddress() + ":" +
+                         std::to_string(component->getResourceDiscoveryHubPort());
 
     std::vector<std::string> failed;
     for (const auto &connection:connections) {
         bool removed = false;
         bool added = false;
-        for (const auto &url: getOrderedUrls(component->getSelfAddress(),*connection)) {
+        for (const auto &url: getOrderedUrls(component->getSelfAddress(), *connection)) {
             try {
                 if (!removed) {
                     component->getBackgroundRequester().requestRemoveRDH(
@@ -625,7 +629,8 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_addNewEndpointSchemaBasedOnOtherDevice(
         JNIEnv *env, jobject thiz, jstring component_url, jstring new_endpoint_type,
-        jstring rdh_url, jstring third_party_component_id, jstring remote_endpoint_type, jobject activity_object) {
+        jstring rdh_url, jstring third_party_component_id, jstring remote_endpoint_type,
+        jobject activity_object) {
     jboolean isCopy = false;
     std::string componentUrl = env->GetStringUTFChars(component_url, &isCopy);
     std::string newEndpointType = env->GetStringUTFChars(new_endpoint_type, &isCopy);
@@ -633,25 +638,27 @@ Java_com_example_ubiformskeletonkey_UbiFormService_addNewEndpointSchemaBasedOnOt
     std::string remoteComponentId = env->GetStringUTFChars(third_party_component_id, &isCopy);
     std::string remoteEndpointType = env->GetStringUTFChars(remote_endpoint_type, &isCopy);
     std::unique_ptr<ComponentRepresentation> manifest;
-    try{
+    try {
         manifest = component->getResourceDiscoveryConnectionEndpoint().getComponentById(rdhUrl,
-                remoteComponentId);
+                                                                                        remoteComponentId);
     } catch (std::logic_error &e) {
-        writeToText("Error getting component manifest" + std::string(e.what()), env, activity_object);
+        writeToText("Error getting component manifest" + std::string(e.what()), env,
+                    activity_object);
         return;
     }
 
-    if (!manifest->hasEndpoint(remoteEndpointType)){
-        writeToText("Manifest has no type " + remoteEndpointType + "  " + manifest->stringify(), env, activity_object);
+    if (!manifest->hasEndpoint(remoteEndpointType)) {
+        writeToText("Manifest has no type " + remoteEndpointType + "  " + manifest->stringify(),
+                    env, activity_object);
         return;
     }
 
-    ConnectionParadigm remoteParadigm = convertToConnectionParadigm(manifest->getConnectionParadigm(remoteEndpointType));
+    ConnectionParadigm remoteParadigm = convertToConnectionParadigm(
+            manifest->getConnectionParadigm(remoteEndpointType));
     ConnectionParadigm newParadigm;
 
 
-
-    switch(remoteParadigm){
+    switch (remoteParadigm) {
         case Pair:
             newParadigm = ConnectionParadigm::Pair;
             break;
@@ -686,8 +693,10 @@ Java_com_example_ubiformskeletonkey_UbiFormService_addNewEndpointSchemaBasedOnOt
             break;
     }
 
-    try{
-        component->getBackgroundRequester().requestChangeEndpoint(componentUrl,newParadigm,newEndpointType,recvSchema.get(),sendSchema.get());
+    try {
+        component->getBackgroundRequester().requestChangeEndpoint(componentUrl, newParadigm,
+                                                                  newEndpointType, recvSchema.get(),
+                                                                  sendSchema.get());
     } catch (std::logic_error &e) {
         writeToText("Couldn't change endpoint: " + std::string(e.what()), env, activity_object);
         return;

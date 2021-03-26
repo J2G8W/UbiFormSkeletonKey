@@ -63,8 +63,10 @@ class NotificationPublisher : NotificationListenerService() {
 
                 Log.d("NOTIFICATION", "IT5")
 
-                val title = sbn.notification.extras.getCharSequence(EXTRA_TITLE)?.toString() ?: "No Title"
-                val text = sbn.notification.extras.getCharSequence(EXTRA_TEXT)?.toString() ?: "No Text"
+                val title =
+                    sbn.notification.extras.getCharSequence(EXTRA_TITLE)?.toString() ?: "No Title"
+                val text =
+                    sbn.notification.extras.getCharSequence(EXTRA_TEXT)?.toString() ?: "No Text"
                 ubiFormService.publishNotification(
                     sbn.packageName,
                     title,

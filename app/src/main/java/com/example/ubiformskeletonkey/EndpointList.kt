@@ -147,7 +147,11 @@ class EndpointList : GeneralConnectedActivity() {
             when (choices.selectedItemPosition) {
                 0 -> updateMainOutput("No action taken")
                 1 -> {
-                    ubiFormService.requestCloseEndpointsOfID(correctComponentUrl, textInputOne, this)
+                    ubiFormService.requestCloseEndpointsOfID(
+                        correctComponentUrl,
+                        textInputOne,
+                        this
+                    )
                 }
                 2 -> ubiFormService.requestCloseEndpointsOfType(
                     correctComponentUrl,
@@ -194,8 +198,10 @@ class EndpointList : GeneralConnectedActivity() {
                     correctComponentUrl, textInputOne, textInputTwo,
                     "$textInputThree:$textInputFour", this
                 )
-                11 -> ubiFormService.addNewEndpointSchemaBasedOnOtherDevice(correctComponentUrl,
-                textInputOne,rdhUrl, textInputTwo, textInputThree, this)
+                11 -> ubiFormService.addNewEndpointSchemaBasedOnOtherDevice(
+                    correctComponentUrl,
+                    textInputOne, rdhUrl, textInputTwo, textInputThree, this
+                )
             }
             generateEndpointList()
         }.start()
