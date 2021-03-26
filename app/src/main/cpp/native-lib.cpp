@@ -343,13 +343,15 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getEndpointDescriptors(JNIEnv
             std::string text = "ID: " + endpoint->getString("id") + "\nEndpoint Type: " +
                                endpoint->getString("endpointType") +
                                "\nCommunications Paradigm: " +
-                               endpoint->getString("connectionParadigm");
+                               endpoint->getString("connectionParadigm") +
+                               "\nCurrent State: " + endpoint->getString("endpointState");
             if (endpoint->hasMember("listenPort")) {
                 text += "\nListening on port: " +
                         std::to_string(endpoint->getInteger("listenPort"));
             } else if (endpoint->hasMember("dialUrl")) {
                 text += "\nDialled: " + endpoint->getString("dialUrl");
             }
+            text += "\n";
             env->SetObjectArrayElement(ret, i++, env->NewStringUTF(text.c_str()));
         }
         return ret;
