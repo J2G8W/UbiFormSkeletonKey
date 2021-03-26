@@ -144,6 +144,15 @@ class UbiFormService : Service() {
         activityObject: GeneralConnectedActivity
     )
 
+    external fun addNewEndpointSchemaBasedOnOtherDevice(
+        componentUrl: String,
+        newEndpointType: String,
+        rdhUrl: String,
+        thirdPartyComponentId: String,
+        remoteEndpointType: String,
+        activityObject: GeneralConnectedActivity
+    )
+
 
     companion object {
         // Used to load the 'native-lib' library on application startup.

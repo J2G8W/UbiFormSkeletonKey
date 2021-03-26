@@ -590,3 +590,79 @@ Java_com_example_ubiformskeletonkey_UbiFormService_request3rdPartyRemoteListenTh
         writeToText(e.what(), env, activity_object);
     }
 }
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_ubiformskeletonkey_UbiFormService_addNewEndpointSchemaBasedOnOtherDevice(
+        JNIEnv *env, jobject thiz, jstring component_url, jstring new_endpoint_type,
+        jstring rdh_url, jstring third_party_component_id, jstring remote_endpoint_type, jobject activity_object) {
+    jboolean isCopy = false;
+    std::string componentUrl = env->GetStringUTFChars(component_url, &isCopy);
+    std::string newEndpointType = env->GetStringUTFChars(new_endpoint_type, &isCopy);
+    std::string rdhUrl = env->GetStringUTFChars(rdh_url, &isCopy);
+    std::string remoteComponentId = env->GetStringUTFChars(third_party_component_id, &isCopy);
+    std::string remoteEndpointType = env->GetStringUTFChars(remote_endpoint_type, &isCopy);
+    std::unique_ptr<ComponentRepresentation> manifest;
+    try{
+        manifest = component->getResourceDiscoveryConnectionEndpoint().getComponentById(rdhUrl,
+                remoteComponentId);
+    } catch (std::logic_error &e) {
+        writeToText("Error getting component manifest" + std::string(e.what()), env, activity_object);
+        return;
+    }
+
+    if (!manifest->hasEndpoint(remoteEndpointType)){
+        writeToText("Manifest has no type " + remoteEndpointType + "  " + manifest->stringify(), env, activity_object);
+        return;
+    }
+
+    ConnectionParadigm remoteParadigm = convertToConnectionParadigm(manifest->getConnectionParadigm(remoteEndpointType));
+    ConnectionParadigm newParadigm;
+
+
+
+    switch(remoteParadigm){
+        case Pair:
+            newParadigm = ConnectionParadigm::Pair;
+            break;
+        case Publisher:
+            newParadigm = ConnectionParadigm::Subscriber;
+            break;
+        case Subscriber:
+            newParadigm = ConnectionParadigm::Publisher;
+            break;
+        case Reply:
+            newParadigm = ConnectionParadigm::Request;
+            break;
+        case Request:
+            newParadigm = ConnectionParadigm::Reply;
+            break;
+    }
+
+    std::shared_ptr<EndpointSchema> recvSchema = nullptr;
+    std::shared_ptr<EndpointSchema> sendSchema = nullptr;
+    switch (newParadigm) {
+        case Publisher:
+            sendSchema = manifest->getReceiverSchema(remoteEndpointType);
+            break;
+        case Subscriber:
+            recvSchema = manifest->getSenderSchema(remoteEndpointType);
+            break;
+        case Pair:
+        case Reply:
+        case Request:
+            sendSchema = manifest->getReceiverSchema(remoteEndpointType);
+            recvSchema = manifest->getSenderSchema(remoteEndpointType);
+            break;
+    }
+
+    try{
+        component->getBackgroundRequester().requestChangeEndpoint(componentUrl,newParadigm,newEndpointType,recvSchema.get(),sendSchema.get());
+    } catch (std::logic_error &e) {
+        writeToText("Couldn't change endpoint: " + std::string(e.what()), env, activity_object);
+        return;
+    }
+
+    writeToText("Success", env, activity_object);
+}

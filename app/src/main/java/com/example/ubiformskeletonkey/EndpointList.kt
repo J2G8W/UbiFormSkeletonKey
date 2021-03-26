@@ -68,6 +68,11 @@ class EndpointList : GeneralConnectedActivity() {
                         shortInputThree.hint = "Remote address"
                         shortInputFour.hint = "Port"
                     }
+                    11 -> {
+                        shortInputOne.hint = "New Endpoint Type"
+                        shortInputTwo.hint = "Third Party Component ID"
+                        shortInputThree.hint = "Remote Endpoint Type"
+                    }
                 }
                 when (position) {
                     1, 2, 4, 5, 7 -> {
@@ -88,6 +93,13 @@ class EndpointList : GeneralConnectedActivity() {
                         shortInputOne.visibility = VISIBLE
                         shortInputTwo.visibility = VISIBLE
                         shortInputThree.visibility = INVISIBLE
+                        shortInputFour.visibility = INVISIBLE
+                        longInput.visibility = INVISIBLE
+                    }
+                    11 -> {
+                        shortInputOne.visibility = VISIBLE
+                        shortInputTwo.visibility = VISIBLE
+                        shortInputThree.visibility = VISIBLE
                         shortInputFour.visibility = INVISIBLE
                         longInput.visibility = INVISIBLE
                     }
@@ -182,6 +194,8 @@ class EndpointList : GeneralConnectedActivity() {
                     correctComponentUrl, textInputOne, textInputTwo,
                     "$textInputThree:$textInputFour", this
                 )
+                11 -> ubiFormService.addNewEndpointSchemaBasedOnOtherDevice(correctComponentUrl,
+                textInputOne,rdhUrl, textInputTwo, textInputThree, this)
             }
             generateEndpointList()
         }.start()

@@ -36,5 +36,6 @@
         <item>Request Create and Dial</item>
         <item>3rd Party Remote Listen Then Dial</item>
         <item>3rd Party Listen Then Remote Dial</item>
+        <item>Add endpoint based on 3rd Party</item>
     </string-array>
 </resources>
