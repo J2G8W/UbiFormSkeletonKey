@@ -360,7 +360,6 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getEndpointDescriptors(JNIEnv
         return env->NewObjectArray(0, env->FindClass("java/lang/String"), env->NewStringUTF(""));
     }
 }
-
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_requestComponentManifest(JNIEnv *env,
