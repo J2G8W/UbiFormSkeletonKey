@@ -7,12 +7,14 @@ Component *component = nullptr;
 
 void writeToText(const std::string &textToWrite, JNIEnv *env,
                  jobject textObject) {
-    jclass TextViewClass = env->FindClass(
-            "com/example/ubiformskeletonkey/GeneralConnectedActivity");
-    jmethodID setText = env->GetMethodID(TextViewClass, "updateMainOutput",
-                                         "(Ljava/lang/String;)V");
-    jstring msg = env->NewStringUTF(textToWrite.c_str());
-    env->CallVoidMethod(textObject, setText, msg);
+    if (env != nullptr) {
+        jclass TextViewClass = env->FindClass(
+                "com/example/ubiformskeletonkey/GeneralConnectedActivity");
+        jmethodID setText = env->GetMethodID(TextViewClass, "updateMainOutput",
+                                             "(Ljava/lang/String;)V");
+        jstring msg = env->NewStringUTF(textToWrite.c_str());
+        env->CallVoidMethod(textObject, setText, msg);
+    }
 }
 
 
@@ -191,7 +193,23 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getComponentsFromRDH(JNIEnv *
         return env->NewObjectArray(0, env->FindClass("java/lang/String"),
                                    env->NewStringUTF(""));
     }
-}extern "C"
+}
+
+std::list<std::string> getOrderedUrls(const std::string& selfAddress, ComponentRepresentation& rep){
+    auto selfSubnet = selfAddress.substr(0, selfAddress.rfind('.'));
+    std::list<std::string> urls;
+    for (const auto &url: rep.getAllUrls()) {
+        if (url.rfind(selfSubnet, 0) == 0) {
+            urls.push_front(url);
+        } else {
+            urls.push_back(url);
+        }
+    }
+    return urls;
+}
+
+
+extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEnv *env,
                                                                            jobject thiz,
@@ -208,15 +226,8 @@ Java_com_example_ubiformskeletonkey_UbiFormService_getCorrectRemoteAddress(JNIEn
         bool found = false;
         int port = rep->getPort();
         auto selfAddress = component->getSelfAddress();
-        auto selfSubnet = selfAddress.substr(0, selfAddress.rfind('.'));
-        std::list<std::string> urls;
-        for (const auto &url: rep->getAllUrls()) {
-            if (url.rfind(selfSubnet, 0) == 0) {
-                urls.push_front(url);
-            } else {
-                urls.push_back(url);
-            }
-        }
+        std::list<std::string> urls = getOrderedUrls(selfAddress,*rep);
+
         for (const auto &url : urls) {
             try {
                 writeToText("Trying to connect on: " + url, env, activity_object);
@@ -497,25 +508,40 @@ Java_com_example_ubiformskeletonkey_UbiFormService_gracefullyCloseRDH(JNIEnv *en
         return;
     }
 
+    int port;
+    try {
+        port = component->getBackgroundRequester().requestCreateRDH(newRdhUrl);
+    } catch (std::logic_error &e) {
+        writeToText("Error creating RDH: " + std::string(e.what()), env, activity_object);
+        return;
+    }
+
+    std::string rdhAddress = newRdhUrl.substr(0, newRdhUrl.rfind(':')) + ":" +  std::to_string(port);
+
+    std::string oldRdh = component->getSelfAddress() + ":" + std::to_string(component->getResourceDiscoveryHubPort());
+
     std::vector<std::string> failed;
     for (const auto &connection:connections) {
         bool removed = false;
         bool added = false;
-        for (const auto &url:connection->getAllUrls()) {
+        for (const auto &url: getOrderedUrls(component->getSelfAddress(),*connection)) {
             try {
                 if (!removed) {
                     component->getBackgroundRequester().requestRemoveRDH(
                             url + ":" + std::to_string(connection->getPort()),
-                            component->getSelfAddress());
+                            oldRdh);
                 }
                 removed = true;
-            } catch (std::logic_error &e) {
+            } catch (NngError &e) {
+                // Not the right URL
                 continue;
+            } catch (RemoteError &e) {
+                // Right URL, but previous RDH wasn't right, still add right one
             }
             try {
                 if (!added) {
                     component->getBackgroundRequester().requestAddRDH(
-                            url + ":" + std::to_string(connection->getPort()), newRdhUrl);
+                            url + ":" + std::to_string(connection->getPort()), rdhAddress);
                 }
                 added = true;
                 break;
@@ -537,7 +563,10 @@ Java_com_example_ubiformskeletonkey_UbiFormService_gracefullyCloseRDH(JNIEnv *en
     }
 
     component->closeResourceDiscoveryHub();
-}extern "C"
+}
+
+
+extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_ubiformskeletonkey_UbiFormService_request3rdPartyListenThenRemoteDial(JNIEnv *env,
                                                                                        jobject thiz,
